@@ -29,6 +29,8 @@ type UseFullpageNavigationOptions = {
   /** Returns the scroll container of the active section, if it has one. */
   getScrollContainer: () => HTMLElement | null;
   enabled?: boolean;
+  /** While true, swallow gestures so a page transition cannot be interrupted. */
+  locked?: boolean;
 };
 
 function normalizeWheelDelta(event: WheelEvent): number {
@@ -51,11 +53,13 @@ export function useFullpageNavigation({
   onNavigate,
   getScrollContainer,
   enabled = true,
+  locked = false,
 }: UseFullpageNavigationOptions) {
   const activeIndexRef = useRef(activeIndex);
   const sectionCountRef = useRef(sectionCount);
   const onNavigateRef = useRef(onNavigate);
   const getScrollContainerRef = useRef(getScrollContainer);
+  const isLockedOutRef = useRef(locked);
 
   const isLockedRef = useRef(false);
   const accumulatedDeltaRef = useRef(0);
@@ -77,6 +81,10 @@ export function useFullpageNavigation({
   useEffect(() => {
     getScrollContainerRef.current = getScrollContainer;
   }, [getScrollContainer]);
+
+  useEffect(() => {
+    isLockedOutRef.current = locked;
+  }, [locked]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -158,6 +166,11 @@ export function useFullpageNavigation({
     };
 
     const handleWheel = (event: WheelEvent) => {
+      if (isLockedOutRef.current) {
+        event.preventDefault();
+        return;
+      }
+
       const delta = normalizeWheelDelta(event);
       if (delta === 0) return;
 
@@ -202,6 +215,7 @@ export function useFullpageNavigation({
     let touchStartHasContainer = false;
 
     const handleTouchStart = (event: TouchEvent) => {
+      if (isLockedOutRef.current) return;
       if (event.touches.length !== 1) return;
 
       const container = getScrollContainerRef.current();
@@ -215,6 +229,7 @@ export function useFullpageNavigation({
     };
 
     const handleTouchEnd = (event: TouchEvent) => {
+      if (isLockedOutRef.current) return;
       const touch = event.changedTouches[0];
       if (!touch) return;
 
@@ -238,6 +253,7 @@ export function useFullpageNavigation({
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (isLockedOutRef.current) return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       if (isEditableTarget(event.target)) return;
 

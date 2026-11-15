@@ -12,6 +12,7 @@ import { SiteHeader } from "@/components/site-header";
 import { IbtidaSection } from "@/components/sections/ibtida-section";
 import { PehchanSection } from "@/components/sections/pehchan-section";
 import { RabtaSection } from "@/components/sections/rabta-section";
+import { BandTransition } from "@/components/ui/band-transition";
 import { useFullpageNavigation } from "@/hooks/use-fullpage-navigation";
 
 const ROUTES = ["/", "/pehchan", "/rabta"] as const;
@@ -53,6 +54,7 @@ export function PresentationOrchestrator({
   const [activeIndex, setActiveIndex] = useState(() =>
     clampSectionIndex(initialIndex),
   );
+  const [isBandTransitioning, setIsBandTransitioning] = useState(false);
   const isCompactViewport = useSyncExternalStore(
     subscribeToCompactViewport,
     getCompactViewportSnapshot,
@@ -61,6 +63,8 @@ export function PresentationOrchestrator({
 
   const activeIndexRef = useRef(activeIndex);
   const isCompactViewportRef = useRef(isCompactViewport);
+  const isBandTransitioningRef = useRef(false);
+  const pendingSectionRef = useRef<number | null>(null);
   const rabtaScrollRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
 
@@ -85,7 +89,7 @@ export function PresentationOrchestrator({
 
       if (isCompactViewportRef.current) {
         slideRefs.current[nextIndex]?.scrollIntoView({
-          behavior: "smooth",
+          behavior: isBandTransitioningRef.current ? "auto" : "smooth",
           block: "start",
         });
       }
@@ -116,10 +120,33 @@ export function PresentationOrchestrator({
     [commitSection],
   );
 
-  const handleDirectNavigate = useCallback(
-    (index: number) => commitSection(index, "push"),
-    [commitSection],
-  );
+  /**
+   * Discrete navigation (header links, HUD dots) runs through the band wipe:
+   * the overlay fully occludes the viewport before the section is committed.
+   */
+  const handleDirectNavigate = useCallback((index: number) => {
+    if (isBandTransitioningRef.current) return;
+
+    const targetIndex = clampSectionIndex(index);
+    if (targetIndex === activeIndexRef.current) return;
+
+    pendingSectionRef.current = targetIndex;
+    isBandTransitioningRef.current = true;
+    setIsBandTransitioning(true);
+  }, []);
+
+  const handleBandMidpoint = useCallback(() => {
+    const targetIndex = pendingSectionRef.current;
+    if (targetIndex === null) return;
+
+    pendingSectionRef.current = null;
+    commitSection(targetIndex, "push");
+  }, [commitSection]);
+
+  const handleBandComplete = useCallback(() => {
+    isBandTransitioningRef.current = false;
+    setIsBandTransitioning(false);
+  }, []);
 
   const getActiveScrollContainer = useCallback(() => {
     if (activeIndexRef.current !== 2) return null;
@@ -132,6 +159,7 @@ export function PresentationOrchestrator({
     onNavigate: handleStepNavigate,
     getScrollContainer: getActiveScrollContainer,
     enabled: !isCompactViewport,
+    locked: isBandTransitioning,
   });
 
   useEffect(() => {
@@ -170,8 +198,13 @@ export function PresentationOrchestrator({
         className={
           isCompactViewport
             ? "w-full"
-            : "h-full w-full will-change-transform transition-transform duration-[750ms] ease-[cubic-bezier(0.65,0,0.35,1)]"
+            : `h-full w-full will-change-transform ${
+                isBandTransitioning
+                  ? "transition-none"
+                  : "transition-transform duration-[750ms] ease-[cubic-bezier(0.65,0,0.35,1)]"
+              }`
         }
+        data-presentation-slider=""
         style={sliderStyle}
       >
         <div
@@ -239,6 +272,16 @@ export function PresentationOrchestrator({
       <PaginationHUD
         activeIndex={activeIndex}
         onSelect={handleDirectNavigate}
+      />
+
+      <BandTransition
+        bands={5}
+        color="#151515"
+        duration={0.6}
+        isTransitioning={isBandTransitioning}
+        onComplete={handleBandComplete}
+        onMidpoint={handleBandMidpoint}
+        stagger={0.5}
       />
     </div>
   );
