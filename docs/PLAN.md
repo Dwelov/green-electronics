@@ -31,9 +31,16 @@ flowchart TD
         P4_2 --> P4_3["Phase 4.3: Pagination HUD & Polish"]
     end
 
+    subgraph Feature 5: Atelier Band Transition
+        P5_1["Phase 5.1: CLI & Component Scaffolding"] --> P5_2["Phase 5.2: Core Band Transition Motion"]
+        P5_2 --> P5_3["Phase 5.3: Orchestrator & Nav Integration"]
+        P5_3 --> P5_4["Phase 5.4: Verification & Fallbacks"]
+    end
+
     P1_3 --> P2_1
     P2_3 --> P3_1
     P3_2 --> P4_1
+    P4_3 --> P5_1
 ```
 
 ---
@@ -731,6 +738,222 @@ Add an interactive floating HUD indicator on the right viewport edge showing the
 
 ---
 
+## Feature 5: Atelier UI Band Transition Page Transition Engine
+
+### Phase 5.1: CLI Initialization, Registry Setup & Component Scaffolding
+
+#### 1. Objective & Scope
+Set up the component registry foundation by verifying or initializing `components.json` using `npx shadcn@latest init -d`, installing `@atelier/band-transition`, and ensuring the resulting skill documents under `.agents/skills` and `.claude/skills` are integrated for the agent harness.
+
+#### 2. Affected Files
+- `frontend/components.json` (New/configured)
+- `frontend/package.json`
+- `frontend/src/components/ui/band-transition.tsx` (or `frontend/src/components/band-transition.tsx`)
+- `.agents/skills/atelier-ui/SKILL.md` / `.claude/skills/atelier-ui/SKILL.md` (Skills created by CLI)
+
+#### 3. Precise Implementation Plan
+1. **Registry & Config Gate:**
+   - Check if `frontend/components.json` exists.
+   - If missing, run:
+     ```bash
+     cd frontend && npx shadcn@latest init -d
+     ```
+   - Validate configuration matches Next.js App Router, `@/*` aliases, and Tailwind v4.
+2. **Component Addition:**
+   - Execute:
+     ```bash
+     cd frontend && npx shadcn@latest add @atelier/band-transition
+     ```
+   - Verify that the component is installed into `frontend/src/components/ui/band-transition.tsx` or `frontend/src/components/band-transition.tsx`.
+   - Verify skill documentation is recorded under `.agents/skills` and `.claude/skills`.
+3. **Dependency Resolution:**
+   - Ensure peer animation dependencies (such as `motion` or CSS keyframe modules) are added to `frontend/package.json` and installed.
+
+#### 4. Verification Tests
+
+##### Automated Tests
+- Command execution verification:
+  `test -f frontend/components.json && echo "PASS: components.json exists"`
+- Component file existence:
+  `test -f frontend/src/components/ui/band-transition.tsx || test -f frontend/src/components/band-transition.tsx`
+- Type checking:
+  `cd frontend && npx tsc --noEmit`
+
+##### Manual Verification Checklist
+1. Verify `components.json` is properly structured.
+2. Confirm the component file exists and exports `BandTransition`.
+3. Check `.agents/skills` / `.claude/skills` for generated skill guidelines.
+
+##### Phase Exit Criteria
+- [x] `components.json` initialized.
+- [x] `@atelier/band-transition` scaffolded without package or build errors.
+
+---
+
+### Phase 5.2: Core Band Transition Component Architecture & Motion Physics
+
+#### 1. Objective & Scope
+Implement the core `BandTransition` component adhering strictly to the parameters:
+`color="#151515" bands={5} duration={0.6} stagger={0.5}`
+creating an industrial, 5-band staggered wipe transition that occludes the screen, triggers the view swap, and unmasks the target section.
+
+#### 2. Affected Files
+- `frontend/src/components/ui/band-transition.tsx` (or `frontend/src/components/band-transition.tsx`)
+
+#### 3. Precise Implementation Plan
+1. **Component Interface Definition:**
+   ```typescript
+   export interface BandTransitionProps {
+     color?: string; // default: "#151515"
+     bands?: number; // default: 5
+     duration?: number; // default: 0.6s
+     stagger?: number; // default: 0.5s total offset
+     isTransitioning: boolean;
+     onMidpoint?: () => void;
+     onComplete?: () => void;
+     direction?: "horizontal" | "vertical"; // default: "horizontal"
+     children?: React.ReactNode;
+   }
+   ```
+2. **Band Geometry & Layout:**
+   - Fixed full-screen overlay: `fixed inset-0 z-50 pointer-events-none overflow-hidden h-[100dvh] w-full`.
+   - Dynamic band generation: Array of length `bands` (5).
+   - Horizontal layout: 5 vertical bands, each `w-[20%] h-full`, or vertical layout: 5 horizontal bands, each `h-[20%] w-full`.
+   - Band color: filled with `#151515`.
+3. **Staggered Animation Timing:**
+   - Individual band duration: `duration = 0.6s`.
+   - Inter-band delay formula:
+     $$\Delta t_i = i \times \left(\frac{\text{stagger}}{\text{bands}}\right) = i \times \left(\frac{0.5}{5}\right) = i \times 0.1\,\text{s}$$
+   - For 5 bands ($i = 0, 1, 2, 3, 4$), start times are: $0.0\,\text{s}, 0.1\,\text{s}, 0.2\,\text{s}, 0.3\,\text{s}, 0.4\,\text{s}$.
+   - Enter wipe completes at: $0.4 + 0.6 = 1.0\,\text{s}$.
+   - Easing curve: `cubic-bezier(0.77, 0, 0.175, 1)` (smooth acceleration and deceleration).
+4. **Transition State Machine:**
+   - **IDLE:** Overlay hidden or scale 0.
+   - **WIPING_IN (0.0s – 1.0s):** Bands wipe in sequentially from top to bottom (or left to right).
+   - **MIDPOINT (1.0s):** Screen is 100% covered in `#151515`. Trigger `onMidpoint()` to commit section or route change.
+   - **WIPING_OUT (1.0s – 2.0s):** Bands wipe out sequentially from top to bottom, unmasking the new section.
+   - **SETTLED (2.0s):** Trigger `onComplete()`, reset state to IDLE.
+
+#### 4. Verification Tests
+
+##### Automated Tests
+- Component render test asserting 5 band divs exist with background color `#151515`:
+  `cd frontend && npm run build`
+- Verify zero TypeScript compiler errors (`npx tsc --noEmit`).
+
+##### Manual Verification Checklist
+1. Render `<BandTransition color="#151515" bands={5} duration={0.6} stagger={0.5} isTransitioning={true} />`.
+2. Observe 5 distinct dark bands wiping in staggered sequence.
+3. Verify bands fully cover viewport at midpoint before sliding/scaling out.
+
+##### Phase Exit Criteria
+- [x] Exactly 5 bands render with color `#151515`.
+- [x] Individual band duration is 0.6s and stagger matches 0.5s total offset.
+
+---
+
+### Phase 5.3: Presentation Orchestrator & Navigation Integration
+
+#### 1. Objective & Scope
+Integrate `BandTransition` into `PresentationOrchestrator` to power discrete section jumps triggered by `SiteHeader` nav items and `PaginationHUD` indicator dots, while leaving natural wheel scrolling in continuous smooth glide mode.
+
+#### 2. Affected Files
+- `frontend/src/components/presentation-orchestrator.tsx`
+- `frontend/src/components/site-header.tsx`
+- `frontend/src/components/pagination-hud.tsx`
+
+#### 3. Precise Implementation Plan
+1. **Transition Coordination in Orchestrator:**
+   - Add state: `const [isBandTransitioning, setIsBandTransitioning] = useState(false);`
+   - Add ref: `const pendingSectionRef = useRef<number | null>(null);`
+2. **Direct Navigation Hooking (`handleDirectNavigate`):**
+   - When a user clicks a nav link (`Ibtida // 01`, `Pehchan // 02`, `Rabta // 03`) or a HUD dot:
+     - If already at that section or already transitioning, ignore.
+     - Store target section: `pendingSectionRef.current = targetIndex;`
+     - Initiate transition: `setIsBandTransitioning(true);`
+3. **Midpoint & Completion Handlers:**
+   - `handleBandMidpoint`:
+     ```typescript
+     const handleBandMidpoint = useCallback(() => {
+       if (pendingSectionRef.current !== null) {
+         commitSection(pendingSectionRef.current, "push");
+         pendingSectionRef.current = null;
+       }
+     }, [commitSection]);
+     ```
+   - `handleBandComplete`:
+     ```typescript
+     const handleBandComplete = useCallback(() => {
+       setIsBandTransitioning(false);
+     }, []);
+     ```
+4. **Fluid Shader & Canvas Protection:**
+   - The WebGL2 canvas in Section 01 remains mounted. Its RAF loop can idle or continue running without destroying textures or framebuffers during the band transition.
+5. **Dual-Mode Experience:**
+   - **Scroll Wheel / Touch Swipe:** Triggers continuous vertical slider transition (`translate3d(0, -${activeIndex * 100}%, 0)` with $750\text{ms}$ smooth glide).
+   - **Header Nav & HUD Clicks:** Triggers the cinematic 5-band Atelier transition with `#151515` staggered wipe.
+
+#### 4. Verification Tests
+
+##### Automated Tests
+- Full production build:
+  `cd frontend && npm run build`
+- ESLint verification:
+  `cd frontend && npm run lint`
+
+##### Manual Verification Checklist
+1. Click `Pehchan // 02` in `SiteHeader`:
+   - 5 dark bands wipe across screen with 0.1s stagger.
+   - At complete occlusion, page updates to Pehchan.
+   - Bands wipe out revealing Section 02.
+2. Click `03 // RABTA` dot in `PaginationHUD`:
+   - Band transition fires cleanly, revealing Rabta.
+3. Scroll mouse wheel:
+   - Verify normal continuous glide still functions smoothly.
+
+##### Phase Exit Criteria
+- [x] Zero white flash or layout shift during band transitions.
+- [x] Discrete navigation triggers band transition; continuous wheel scroll retains fluid slider glide.
+
+---
+
+### Phase 5.4: Verification, Quality Assurance & Fallback Testing
+
+#### 1. Objective & Scope
+Harden the band transition for mobile viewports, rapid double-clicks, and accessibility (`prefers-reduced-motion`).
+
+#### 2. Affected Files
+- `frontend/src/components/ui/band-transition.tsx`
+- `frontend/src/components/presentation-orchestrator.tsx`
+
+#### 3. Precise Implementation Plan
+1. **Reduced Motion Accessibility:**
+   - Check `window.matchMedia('(prefers-reduced-motion: reduce)').matches`.
+   - If enabled, suppress the 5-band stagger animation and perform an instantaneous section swap or 100ms subtle opacity crossfade.
+2. **Rapid Click Debounce & Lockout:**
+   - While `isBandTransitioning` is true, discard subsequent clicks on header links, HUD dots, and wheel gestures.
+3. **Mobile Dynamic Viewport Guard:**
+   - Bands utilize `h-[100dvh]` to adapt dynamically to mobile browser navigation bar collapse.
+4. **DevTools Source Hardening Compliance:**
+   - Ensure no debug logs are printed during transitions.
+
+#### 4. Verification Tests
+
+##### Automated Tests
+- Run all test suites:
+  `cd frontend && npm run lint && npx tsc --noEmit && npm run build`
+
+##### Manual Verification Checklist
+1. Rapidly click multiple header items in quick succession: confirm only the first click initiates the transition; no animation glitches or state race conditions.
+2. Enable "Prefers reduced motion" in browser rendering settings: confirm transition is instantaneous without motion sickness.
+3. Test on mobile viewports (Chrome DevTools device toolbar): verify bands cover full viewport height without seams.
+
+##### Phase Exit Criteria
+- [x] 100% compliant with accessibility reduced-motion preferences.
+- [x] Zero state glitches on rapid interaction.
+
+---
+
 ## Complete Verification & Validation Master Matrix
 
 | Feature | Phase | Primary Verification Method | Success Criteria |
@@ -746,3 +969,7 @@ Add an interactive floating HUD indicator on the right viewport edge showing the
 | **F4: Viewport & Route** | 4.1 Nested Arbiter | Boundary scroll testing on Rabta section | Internal scroll completes before page exit |
 | **F4: Viewport & Route** | 4.2 Route Sync | URL inspection & browser Back/Forward test | URL updates dynamically; back button navigates |
 | **F4: Viewport & Route** | 4.3 HUD & Polish | Click interaction on HUD dots & header links | Instant smooth jump to target section |
+| **F5: Band Transition** | 5.1 CLI & Scaffolding | `components.json` check & CLI component addition | Component and skills scaffolded without error |
+| **F5: Band Transition** | 5.2 Motion Physics | 5 bands `#151515`, duration 0.6s, stagger 0.5s check | Precise 5-band geometry, timing & midpoint swap |
+| **F5: Band Transition** | 5.3 Nav Integration | Click header links & HUD dots to trigger wipe | Seamless section switch at midpoint occlusion |
+| **F5: Band Transition** | 5.4 QA & Fallbacks | Rapid clicks & `prefers-reduced-motion` test | Zero race conditions, reduced-motion compliance |

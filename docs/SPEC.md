@@ -361,14 +361,51 @@ Section 03 (`Rabta`) contains technical specs, contact forms, and market details
 4. **Nested Content & Route Sync Verification:**
    - On Section 03 (`Rabta`), internal content scrolls fully before allowing upward exit.
    - Browser URL updates to match active section; browser Back/Forward buttons navigate smoothly between sections.
+5. **Band Transition Verification:**
+   - 5 bands render in sequence with color `#151515`, duration 0.6s, stagger 0.5s.
+   - View/section swaps cleanly at occlusion midpoint with zero visual artifacting.
 
+---
 
-# NEW FEATURE 
+## 5. Feature 5: Atelier UI Band Transition Page Transition Engine
 
-Add Atelier's Band Transition to my app.
+### 5.1 Problem Statement & Aesthetic Intent
+While continuous wheel scrolling smoothly translates the presentation slider, direct jumps between sections (via the navigation header links, pagination HUD dots, or direct route navigation) require a high-impact, editorial visual bridge. 
 
-If there is no components.json, run: npx shadcn@latest init -d
-Then run: npx shadcn@latest add @atelier/band-transition
-That writes the atelier-ui skill under .agents/skills and .claude/skills. Follow it.
+To provide a distinct, tactile transition inspired by Atelier UI, the application incorporates a cinematic **Band Transition**. The transition slices the viewport into staggered industrial dark bands (`#151515`) that wipe across the screen in sequence, conceal the viewport while the active view or route updates, and then wipe out in a staggered choreography to reveal the target section.
 
-Props: color="#151515" bands={5} duration={0.6} stagger={0.5}
+### 5.2 Component Configuration & Props Specification
+The component strictly implements the Atelier UI specification with the required parameters:
+- **`color`**: `"#151515"` (Deep industrial graphite/slate matching Green Electronics branding)
+- **`bands`**: `5` (Five parallel horizontal or vertical bands spanning the viewport)
+- **`duration`**: `0.6` (Each individual band wipe duration: 0.6 seconds)
+- **`stagger`**: `0.5` (Total stagger offset across the 5 bands, giving a 0.1s inter-band delay)
+
+```tsx
+<BandTransition
+  color="#151515"
+  bands={5}
+  duration={0.6}
+  stagger={0.5}
+  isTransitioning={isTransitioning}
+  onTransitionComplete={handleTransitionComplete}
+>
+  {children}
+</BandTransition>
+```
+
+### 5.3 CLI & Component Integration Flow
+- **CLI Dependency Management**:
+  - Check for `frontend/components.json`. If missing, initialize via:
+    `npx shadcn@latest init -d`
+  - Add the Atelier component via:
+    `npx shadcn@latest add @atelier/band-transition`
+  - Skill files written to `.agents/skills` and `.claude/skills` are respected and followed by the agent harness.
+- **Architectural Integration**:
+  - The `BandTransition` overlay is placed at the top layer (`z-50`) of the application layout / presentation orchestrator.
+  - When a direct navigation occurs (e.g. clicking `SiteHeader` nav items or `PaginationHUD` indicators), the band transition sequence is triggered:
+    1. **Enter Phase (Wipe In)**: 5 bands expand across the screen with staggered delay $t_i = i \times (\text{stagger} / \text{bands})$ over $0.6\,\text{s}$ using cubic easing `cubic-bezier(0.77, 0, 0.175, 1)`.
+    2. **Midpoint Swap**: Once the bands completely occlude the viewport, `activeIndex` or route state commits instantaneously.
+    3. **Exit Phase (Wipe Out)**: Bands retract or slide out in the same staggered sequence, smoothly unveiling the target section.
+  - **Fluid Shader Safety**: The WebGL2 canvas in Section 01 remains undisturbed; no canvas re-allocation or WebGL context recreation is triggered during the band wipe.
+  - **Accessibility**: Honors `prefers-reduced-motion` by disabling the staggered wipe and falling back to an instant or simple 150ms opacity crossfade.
