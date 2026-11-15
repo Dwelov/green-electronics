@@ -361,3 +361,14 @@ Section 03 (`Rabta`) contains technical specs, contact forms, and market details
 4. **Nested Content & Route Sync Verification:**
    - On Section 03 (`Rabta`), internal content scrolls fully before allowing upward exit.
    - Browser URL updates to match active section; browser Back/Forward buttons navigate smoothly between sections.
+
+
+# NEW FEATURE 
+
+Add Atelier's Band Transition to my app.
+
+If there is no components.json, run: npx shadcn@latest init -d
+Then run: npx shadcn@latest add @atelier/band-transition
+That writes the atelier-ui skill under .agents/skills and .claude/skills. Follow it.
+
+Props: color="#151515" bands={5} duration={0.6} stagger={0.5}

@@ -1,17 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import type { MouseEvent } from "react";
 import { PersonIcon } from "@/components/icons";
 
+type SiteHeaderProps = {
+  activeIndex: number;
+  onNavigate: (index: number) => void;
+};
+
 const NAV_ITEMS = [
-  { href: "/", label: "Ibtida // 01" },
-  { href: "/pehchan", label: "Pehchan // 02" },
-  { href: "/rabta", label: "Rabta // 03" },
+  { index: 0, href: "/", label: "Ibtida // 01" },
+  { index: 1, href: "/pehchan", label: "Pehchan // 02" },
+  { index: 2, href: "/rabta", label: "Rabta // 03" },
 ] as const;
 
-export function SiteHeader() {
-  const pathname = usePathname();
+export function SiteHeader({ activeIndex, onNavigate }: SiteHeaderProps) {
+  const handleNavigate = (
+    event: MouseEvent<HTMLAnchorElement>,
+    index: number,
+  ) => {
+    // Preserve modifier clicks so links still open in a new tab.
+    if (
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      event.button !== 0
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    onNavigate(index);
+  };
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-ink/10 bg-chalk/90 backdrop-blur-md">
@@ -21,12 +43,14 @@ export function SiteHeader() {
             aria-label="Green Electronics — Ibtida"
             className="flex h-7 w-7 items-center justify-center rounded-sm bg-primary font-display text-sm font-bold tracking-tighter text-white"
             href="/"
+            onClick={(event) => handleNavigate(event, 0)}
           >
             GE
           </Link>
           <Link
             className="font-display text-label-md uppercase tracking-tight text-ink transition-colors hover:text-primary-dark"
             href="/"
+            onClick={(event) => handleNavigate(event, 0)}
           >
             Green Electronics
           </Link>
@@ -34,7 +58,7 @@ export function SiteHeader() {
 
         <nav aria-label="Main" className="hidden items-center gap-8 md:flex">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = activeIndex === item.index;
 
             return (
               <Link
@@ -46,6 +70,7 @@ export function SiteHeader() {
                     : "text-muted hover:text-ink"
                 }`}
                 href={item.href}
+                onClick={(event) => handleNavigate(event, item.index)}
               >
                 {item.label}
               </Link>
@@ -57,6 +82,7 @@ export function SiteHeader() {
           <Link
             className="font-display text-label-md uppercase tracking-wider text-ink transition-colors hover:text-primary-dark"
             href="/rabta"
+            onClick={(event) => handleNavigate(event, 2)}
           >
             Rabta
           </Link>
@@ -64,6 +90,7 @@ export function SiteHeader() {
             aria-label="Rabta karein"
             className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary-dark"
             href="/rabta"
+            onClick={(event) => handleNavigate(event, 2)}
           >
             <PersonIcon className="h-[18px] w-[18px]" />
           </Link>

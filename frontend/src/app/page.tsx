@@ -1,5 +1,5 @@
-import { LiquidReveal } from "@/components/liquid-reveal";
+import { PresentationOrchestrator } from "@/components/presentation-orchestrator";
 
 export default function IbtidaPage() {
-  return <LiquidReveal />;
+  return <PresentationOrchestrator />;
 }
