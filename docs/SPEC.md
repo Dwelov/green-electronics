@@ -288,7 +288,7 @@ The application transitions from discrete, disjoint route loading to a **Unified
 - The homepage (`/`) contains all three primary sections in contiguous order:
   - **Section 01: Ibtida** (Hero with WebGL2 Fluid Simulation & Cursor Reveal)
   - **Section 02: Pehchan** (Brand Identity, "Saaf bijli, samjhdaar cheezein", 3 Core Principles)
-  - **Section 03: Rabta** (Contact dossier, WhatsApp Dispatch, Contact Form, Market Specs)
+  - **Section 03: Rabta** (Store map directions, direct WhatsApp & phone actions)
 - Each section occupies full viewport height (`100dvh` / `h-screen`).
 - The transition between sections is driven by hardware-accelerated transforms:
   $$\mathbf{Y}_{\text{offset}} = -(\text{currentSectionIndex} \times 100)\,\%$$
@@ -316,12 +316,12 @@ Trackpad and inertia-wheel users produce hundreds of wheel events per stroke.
 ### Feature 4: Viewport Arbitration, Nested Scrolling & Route Synchronization
 
 #### 4.1 Nested Scroll Arbitration (Internal Section Overflow)
-Section 03 (`Rabta`) contains technical specs, contact forms, and market details that may exceed the viewport height on smaller screens, laptops, or rotated tablets.
+Section 03 (`Rabta`) is deliberately reduced to two high-impact elements — a tappable store-map card and two direct contact buttons — so it fits a full viewport on most screens. The arbiter remains as a safeguard for short or rotated viewports where the map's minimum height still overflows.
 - **Arbitration Logic:**
   - When the user is on a section that has internal overflow (`scrollHeight > clientHeight`):
     - **Scrolling Down:** If `scrollTop + clientHeight < scrollHeight - 2`, the event MUST scroll the internal content downwards. The section transition to next section (or rubber-band bounce if on last section) is BLOCKED until internal scroll hits the bottom.
     - **Scrolling Up:** If `scrollTop > 2`, the event MUST scroll the internal content upwards. Transition to Section 02 (`Pehchan`) is BLOCKED until `scrollTop <= 2`.
-  - This guarantees the user can read the entire dossier and submit the contact form without accidental page switches.
+  - This guarantees the entire map card and both contact actions remain reachable on constrained screens without accidental page switches.
 
 #### 4.2 Deep Route & History Synchronization
 - **Bidirectional Sync:**
@@ -343,6 +343,22 @@ Section 03 (`Rabta`) contains technical specs, contact forms, and market details
   - Viewports measured using dynamic viewport height (`100dvh`) to account for mobile browser address bars.
   - If screen height is below `560px` (landscape phones), enable standard natural vertical document scrolling to prevent layout clipping.
 
+#### 4.4 Rabta Contact Surface (Two-Element Composition)
+Section 03 is a strict two-element surface. All legacy content — contact form, shop dossier, email terminal, opening-hours ledger, and technical footprint grid — is removed from the view.
+
+1. **Store Map Button Card**
+   - Coordinates: `32°19'39.8"N 74°20'59.7"E` (`32.327722, 74.349917`) — Model Town, Daska.
+   - The entire card is an `<a>` to `https://www.google.com/maps/dir/?api=1&destination=32.327722,74.349917`, opened in a new tab with `rel="noopener noreferrer"`.
+   - Directions mode is pre-selected so mobile opens the Google Maps app with turn-by-turn navigation armed.
+   - Visual layer: dark night-map with city-block grid, arterial roads, contour lines, canal, area labels, coordinate crosshair, pulsating radar rings, and an emerald store pin. Hover/focus reveals the prompt `Rasta Maloom Karein // Get Directions (Google Maps)`.
+   - The coordinates badge and `Model Town, Daska` store label stay visible at all times.
+2. **Direct Contact Actions (`03000841013`)**
+   - WhatsApp: `https://wa.me/923000841013` — emerald (`bg-primary`), WhatsApp glyph, label `WhatsApp Message`, number `0300 0841013`.
+   - Local call: `tel:03000841013` — high-contrast chalk on ink, phone glyph, label `Local Phone Call`, same number.
+   - Both are one-tap anchors with no intermediate form or confirmation step.
+
+Responsive contract: the map uses `clamp(300px, 42vh, 440px)` height and the contact actions collapse to a single column below the `sm` breakpoint, with no horizontal overflow at 390×844, 1366×768, or 1920×1080.
+
 ---
 
 ## 4. Verification & Testing Requirements
@@ -359,7 +375,8 @@ Section 03 (`Rabta`) contains technical specs, contact forms, and market details
    - Touch drag upwards $>50\text{px}$ advances to next section; touch drag downwards $>50\text{px}$ returns to previous section.
    - Arrow keys (`ArrowDown`, `ArrowUp`) step smoothly between sections.
 4. **Nested Content & Route Sync Verification:**
-   - On Section 03 (`Rabta`), internal content scrolls fully before allowing upward exit.
+   - On Section 03 (`Rabta`), internal content scrolls fully before allowing upward exit on constrained viewports.
+   - Map card opens Google Maps Directions with destination `32.327722,74.349917`; WhatsApp opens `wa.me/923000841013`; call button dials `tel:03000841013`.
    - Browser URL updates to match active section; browser Back/Forward buttons navigate smoothly between sections.
 5. **Band Transition Verification:**
    - 5 bands render in sequence with color `#151515`, duration 0.6s, stagger 0.5s.

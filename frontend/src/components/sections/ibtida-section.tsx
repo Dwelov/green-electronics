@@ -29,7 +29,7 @@ export function IbtidaSection({
         </div>
         <div className="flex items-center gap-4 rounded border border-ink/10 bg-chalk/90 px-3 py-1.5 backdrop-blur-sm">
           <span className="hidden font-display text-technical-code font-medium uppercase text-muted md:inline">
-            24.8607° N, 67.0011° E
+            32°19&apos;39.8&quot; N, 74°20&apos;59.7&quot; E
           </span>
           <div className="flex items-center gap-2">
             <span className="whitespace-nowrap rounded bg-primary/10 px-1.5 py-0.5 font-display text-[10px] font-bold uppercase tracking-wider text-primary-dark">

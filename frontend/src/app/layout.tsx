@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s — Green Electronics",
   },
   description:
-    "Karachi ki local hardware engineering. Asal products, wajib qeemat, bharosay ki service. Al-Karam Electronics Market, Saddar.",
+    "Local hardware engineering. Asal products, wajib qeemat, bharosay ki service — Green Electronics Pakistan. Model Town, Daska (32°19'39.8\"N 74°20'59.7\"E).",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

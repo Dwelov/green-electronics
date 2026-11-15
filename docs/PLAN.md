@@ -467,7 +467,7 @@ Construct the unified full-page presentation shell (`frontend/src/components/pre
 1. **Section Architecture:**
    - Section 01: `IbtidaSection` — contains the WebGL2 Fluid Cursor Reveal engine and technical ledgers.
    - Section 02: `PehchanSection` — contains "Saaf bijli, samjhdaar cheezein" and 3 principle cards.
-   - Section 03: `RabtaSection` — contains contact info, WhatsApp dispatch, contact form, and market specs.
+   - Section 03: `RabtaSection` — two-element contact surface: tappable store-map card with Google Maps directions plus direct WhatsApp and phone actions.
 2. **Container CSS Transform Engine:**
    - Outer container: `fixed inset-0 w-full h-[100dvh] overflow-hidden bg-chalk`.
    - Slider container: `w-full h-full will-change-transform transition-transform duration-750 ease-[cubic-bezier(0.65,0,0.35,1)]`.
@@ -567,17 +567,23 @@ Build the high-precision gesture recognition engine that normalizes trackpad and
 ### Phase 4.1: Nested Scroll Arbitration & Internal Overflow Handling
 
 #### 1. Objective & Scope
-Implement boundary detection for sections whose content exceeds the viewport height (specifically Section 03 `Rabta`), allowing internal content to scroll to the bottom before blocking downward movement, and scrolling up to the top before triggering section transition back to Section 02.
+Keep boundary detection for sections whose content can exceed the viewport height (specifically Section 03 `Rabta`), allowing internal content to scroll to the bottom before blocking downward movement, and scrolling up to the top before triggering section transition back to Section 02. Section 03 itself is simplified to two elements — a store-map directions card and two direct contact buttons — so overflow only occurs on short or rotated viewports.
 
 #### 2. Affected Files
 - `frontend/src/components/presentation-orchestrator.tsx`
 - `frontend/src/components/sections/rabta-section.tsx`
 
 #### 3. Precise Implementation Plan
-1. **Container Reference & Overflow Detection:**
+1. **Simplified Rabta Composition:**
+   - Remove `ContactForm`, the contact dossier rows (email, phone desk, address ledger, opening hours), and the technical footprint grid.
+   - Render an editorial header (`[ 03 // Rabta ]`, `Humse Rabta Karein`, open/standby status badge).
+   - Render a full-width map button card anchored to `https://www.google.com/maps/dir/?api=1&destination=32.327722,74.349917`, showing coordinates `32°19'39.8"N 74°20'59.7"E` and the Model Town, Daska store label.
+   - Render two action buttons: WhatsApp (`https://wa.me/923000841013`) and local call (`tel:03000841013`) for `0300 0841013`.
+2. **Container Reference & Overflow Detection:**
    - Attach `ref={rabtaScrollContainerRef}` to Section 03's scrollable container.
    - Overflow condition: `isScrollable = container.scrollHeight > container.clientHeight + 4`.
-2. **Boundary Arbitration Rules:**
+   - The map card height uses `clamp(300px, 42vh, 440px)`; contact actions stack on mobile and sit in two columns from `sm` upward.
+3. **Boundary Arbitration Rules:**
    - When `activeIndex === 2` (Rabta Section):
      - **User Scrolls DOWN (`deltaY > 0`):**
        - Check remaining bottom scroll:
@@ -596,7 +602,7 @@ Implement boundary detection for sections whose content exceeds the viewport hei
        - If `currentTop <= 2`:
          - We have reached the very top of Rabta.
          - The NEXT upward scroll gesture triggers `goToPrev()`, transitioning smoothly back to Section 02 (`Pehchan`).
-3. **Scroll Smoothing & Touch Interaction in Overflowing Section:**
+4. **Scroll Smoothing & Touch Interaction in Overflowing Section:**
    - Apply `-webkit-overflow-scrolling: touch` and `overflow-y: auto` to Section 03 content.
    - On touch swipe in Rabta, check if container is at boundary before intercepting swipe.
 
@@ -611,18 +617,24 @@ Implement boundary detection for sections whose content exceeds the viewport hei
   // When scrollTop is 0 and deltaY < 0 (scrolling up at top)
   // Then shouldBlockTransition === false (trigger transition to section 1)
   ```
+- Build validation: `cd frontend && npx tsc --noEmit && npm run lint && npm run build`.
 
 ##### Manual Verification Checklist
 1. Navigate to Section 03 (`Rabta`) on a laptop screen (e.g. 1366x768 or 1080p).
-2. Scroll down with mouse wheel: observe that Rabta's contact form and technical specs scroll smoothly into view.
-3. Once at the bottom, scroll up slightly: observe that the page scrolls up within Rabta.
-4. Scroll all the way up until the top banner is visible; scroll up one more flick: observe smooth transition back to Section 02 (`Pehchan`).
+2. Confirm only the header, map card, and two contact buttons render — no form, dossier, or footprint table.
+3. Tap the map card: Google Maps opens in a new tab in Directions mode with destination `32.327722,74.349917`.
+4. Tap WhatsApp: opens `https://wa.me/923000841013`. Tap call: invokes `tel:03000841013`.
+5. On a short viewport, scroll down with mouse wheel: observe that the map and buttons scroll smoothly into view.
+6. Once at the bottom, scroll up slightly: observe that the page scrolls up within Rabta.
+7. Scroll all the way up until the header is visible; scroll up one more flick: observe smooth transition back to Section 02 (`Pehchan`).
 
 ##### Edge Cases & Stress Scenarios
 - Resize browser window from large desktop to small netbook: internal overflow recalculated dynamically.
 - Mobile virtual keyboard open: does not lock or break scroll boundaries.
+- 390×844 portrait and 1920×1080 desktop: no horizontal scrollbar, no clipped contact buttons.
 
 ##### Phase Exit Criteria
+- [x] Rabta contains exactly the map directions card and the two direct contact actions.
 - [x] Internal content in Rabta is 100% accessible and readable.
 - [x] Upward transition to Pehchan occurs only when Rabta is scrolled to the top.
 

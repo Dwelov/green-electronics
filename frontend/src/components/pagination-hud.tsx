@@ -31,7 +31,7 @@ export function PaginationHUD({ activeIndex, onSelect }: PaginationHUDProps) {
             type="button"
           >
             <span
-              className={`rounded-sm bg-chalk/85 px-2 py-1 font-display text-technical-code font-bold uppercase tracking-widest text-ink shadow-sm backdrop-blur-sm transition-opacity duration-200 ${
+              className={`hidden rounded-sm bg-chalk/85 px-2 py-1 font-display text-technical-code font-bold uppercase tracking-widest text-ink shadow-sm backdrop-blur-sm transition-opacity duration-200 sm:inline-block ${
                 isActive
                   ? "opacity-100"
                   : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
