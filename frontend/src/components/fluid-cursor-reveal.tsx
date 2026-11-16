@@ -491,11 +491,11 @@ function createFluidEngine(
     context.fillText("GE", 56 * scale, 37 * scale);
 
     context.textAlign = "right";
-    context.fillText("RABTA", width - 32 * scale, 37 * scale);
+    context.fillText("CONTACT", width - 32 * scale, 37 * scale);
 
     context.textAlign = "center";
     context.fillText(
-      "[ CURSOR HILAYEIN ]",
+      "[ MOVE CURSOR TO EXPLORE ]",
       width / 2,
       height - 40 * scale,
     );

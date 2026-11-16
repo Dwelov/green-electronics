@@ -8,7 +8,6 @@ import {
 } from "@/components/icons";
 
 const COORDINATES = `32°19'39.8"N 74°20'59.7"E`;
-const PHONE_DISPLAY = "0300 0841013";
 const PHONE_HREF = "tel:03000841013";
 const WHATSAPP_URL = "https://wa.me/923000841013";
 const MAP_URL =
@@ -332,25 +331,12 @@ export function RabtaSection({
       <div className="mx-auto flex min-h-[100dvh] w-full max-w-7xl flex-col gap-4 px-5 pb-8 pt-20 md:px-12 lg:pt-24">
         {/* Editorial header */}
         <header>
-          <div className="flex flex-wrap items-center gap-3 font-display text-technical-code uppercase tracking-widest">
-            <span className="text-primary">[ 03 // Rabta ]</span>
-            <span aria-hidden="true" className="h-px w-10 bg-primary/60" />
-            <span className="text-chalk/40">Direct Line // Daska</span>
-            <span className="ml-auto flex items-center gap-2 border border-chalk/15 px-2.5 py-1 text-chalk/60">
-              <span
-                aria-hidden="true"
-                className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary motion-reduce:animate-none"
-              />
-              Chalu // Open
-            </span>
-          </div>
-
           <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
             <h2 className="font-display text-[38px] font-bold uppercase leading-[0.94] tracking-[-0.04em] text-chalk sm:text-[52px] lg:text-[60px]">
-              Humse Rabta Karein
+              Get In Touch
             </h2>
             <p className="max-w-sm pb-1 font-sans text-body-sm text-chalk/55">
-              Ek tap mein raasta ya rabta — bilkul bina form, bina intezaar.
+              Get directions or connect in a single tap 
             </p>
           </div>
         </header>
@@ -400,7 +386,7 @@ export function RabtaSection({
                 aria-hidden="true"
                 className="h-1.5 w-1.5 bg-primary"
               />
-              Live Map // Grid 03
+              Live Map 
             </span>
             <span className="flex items-center gap-2 border border-chalk/15 bg-ink/70 px-2.5 py-1.5 font-display text-technical-code uppercase tracking-widest text-chalk/70 backdrop-blur-sm">
               Open in Maps
@@ -412,12 +398,12 @@ export function RabtaSection({
           <div className="pointer-events-none absolute inset-x-4 top-[22%] flex justify-center opacity-0 transition-all duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none sm:top-[24%]">
             <span className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 border border-primary/40 bg-ink/85 px-4 py-2 text-center font-display text-technical-code uppercase tracking-widest text-chalk backdrop-blur-sm">
               <DirectionsIcon className="h-4 w-4 shrink-0 text-primary" />
-              Rasta Maloom Karein
+              Get Directions
               <span aria-hidden="true" className="text-chalk/30">
                 {"//"}
               </span>
               <span className="text-primary">
-                Get Directions (Google Maps)
+                Open Google Maps
               </span>
             </span>
           </div>
@@ -427,7 +413,7 @@ export function RabtaSection({
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="min-w-0">
                 <p className="font-display text-technical-code uppercase tracking-widest text-chalk/50">
-                  Dukan ka Pata // Store Location
+                  Store Location
                 </p>
                 <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
                   <MapPinIcon className="h-4 w-4 shrink-0 text-primary" />
@@ -451,46 +437,37 @@ export function RabtaSection({
         </a>
 
         {/* Element 02 — direct contact actions */}
-        <div className="grid gap-3 sm:grid-cols-2">
-          <a
-            aria-label={`WhatsApp message to ${PHONE_DISPLAY}`}
-            className="group flex items-center gap-4 bg-primary px-5 py-4 text-chalk transition-colors duration-150 hover:bg-primary-deep"
-            href={WHATSAPP_URL}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-white/25 bg-white/10 transition-colors group-hover:bg-white/15">
-              <WhatsAppIcon className="h-5 w-5" />
-            </span>
-            <span className="flex min-w-0 flex-col">
-              <span className="font-display text-technical-code uppercase tracking-widest text-white/70">
-                WhatsApp Message // 01
+        <div className="flex flex-wrap items-center justify-between gap-5 border-t border-chalk/10 pt-5">
+          
+          <div className="flex items-center gap-6 sm:gap-8">
+            <a
+              aria-label="Chat with Green Electronics on WhatsApp"
+              className="group flex flex-col items-center gap-2 outline-none"
+              href={WHATSAPP_URL}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-transform duration-200 group-hover:scale-105 group-focus-visible:ring-2 group-focus-visible:ring-primary group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-ink motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+                <WhatsAppIcon className="h-7 w-7" />
               </span>
-              <span className="mt-1 font-display text-headline-sm tracking-tight text-chalk">
-                {PHONE_DISPLAY}
+              <span className="font-display text-technical-code uppercase tracking-widest text-chalk/55 transition-colors duration-200 group-hover:text-chalk group-focus-visible:text-chalk">
+                WhatsApp
               </span>
-            </span>
-            <ArrowForwardIcon className="ml-auto h-5 w-5 shrink-0 transition-transform duration-150 group-hover:translate-x-1" />
-          </a>
+            </a>
 
-          <a
-            aria-label={`Call ${PHONE_DISPLAY}`}
-            className="group flex items-center gap-4 bg-chalk px-5 py-4 text-ink transition-colors duration-150 hover:bg-chalk/90"
-            href={PHONE_HREF}
-          >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-ink/15 bg-ink/5 transition-colors group-hover:bg-ink/10">
-              <PhoneIcon className="h-5 w-5" />
-            </span>
-            <span className="flex min-w-0 flex-col">
-              <span className="font-display text-technical-code uppercase tracking-widest text-ink/50">
-                Local Phone Call // 02
+            <a
+              aria-label="Call Green Electronics"
+              className="group flex flex-col items-center gap-2 outline-none"
+              href={PHONE_HREF}
+            >
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-chalk text-ink shadow-lg transition-transform duration-200 group-hover:scale-105 group-focus-visible:ring-2 group-focus-visible:ring-chalk group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-ink motion-reduce:transition-none motion-reduce:group-hover:scale-100 group-hover:bg-white">
+                <PhoneIcon className="h-7 w-7" />
               </span>
-              <span className="mt-1 font-display text-headline-sm tracking-tight text-ink">
-                {PHONE_DISPLAY}
+              <span className="font-display text-technical-code uppercase tracking-widest text-chalk/55 transition-colors duration-200 group-hover:text-chalk group-focus-visible:text-chalk">
+                Call Us
               </span>
-            </span>
-            <ArrowForwardIcon className="ml-auto h-5 w-5 shrink-0 transition-transform duration-150 group-hover:translate-x-1" />
-          </a>
+            </a>
+          </div>
         </div>
       </div>
     </div>

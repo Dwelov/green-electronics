@@ -10,9 +10,9 @@ type SiteHeaderProps = {
 };
 
 const NAV_ITEMS = [
-  { index: 0, href: "/", label: "Ibtida // 01" },
-  { index: 1, href: "/pehchan", label: "Pehchan // 02" },
-  { index: 2, href: "/rabta", label: "Rabta // 03" },
+  { index: 0, href: "/", label: "Home " },
+  { index: 1, href: "/pehchan", label: "Identity" },
+  { index: 2, href: "/rabta", label: "Contact " },
 ] as const;
 
 export function SiteHeader({ activeIndex, onNavigate }: SiteHeaderProps) {
@@ -40,7 +40,7 @@ export function SiteHeader({ activeIndex, onNavigate }: SiteHeaderProps) {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:px-12">
         <div className="flex items-center gap-2">
           <Link
-            aria-label="Green Electronics — Ibtida"
+            aria-label="Green Electronics — Home"
             className="flex h-7 w-7 items-center justify-center rounded-sm bg-primary font-display text-sm font-bold tracking-tighter text-white"
             href="/"
             onClick={(event) => handleNavigate(event, 0)}
@@ -84,10 +84,10 @@ export function SiteHeader({ activeIndex, onNavigate }: SiteHeaderProps) {
             href="/rabta"
             onClick={(event) => handleNavigate(event, 2)}
           >
-            Rabta
+            Contact
           </Link>
           <Link
-            aria-label="Rabta karein"
+            aria-label="Contact us"
             className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary-dark"
             href="/rabta"
             onClick={(event) => handleNavigate(event, 2)}

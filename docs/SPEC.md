@@ -4,7 +4,7 @@
 **Version:** 2.0.0  
 **Status:** Approved for Implementation  
 **Target Environment:** Next.js 16 (App Router, Turbopack), React 19, Tailwind CSS 4, TypeScript 5, WebGL2  
-**Branding Core:** "Asal Khara Maal" // "Paiydar Funn" — Karachi Hardware & Electronics Engineering  
+**Branding Core:** "Genuine Hardware & Engineering" // "Enduring Engineering" — Karachi Hardware & Electronics Engineering  
 
 ---
 
@@ -16,7 +16,7 @@ The application architecture combines:
 1. **Bulletproof Process Lifecycle Management (`./start.sh`)**: An automated startup and sanitation controller that manages environment integrity, port collision resolution, cache cleanup, and signal handling (including `Ctrl+C`, `Ctrl+Z`, and unexpected terminates).
 2. **High-Fidelity WebGL2 Eulerian Fluid Simulation Engine**: A full Navier-Stokes GPU-accelerated fluid dynamic cursor reveal effect that peels back an Off-White (`#F8FAFC`) slate base layer to reveal an Emerald (`#059669`) core layer with procedural circuit traces and Space Grotesk typography.
 3. **Continuous Full-Page Viewport & Gesture Navigation Engine**: Seamless multi-section navigation replacing discrete click-only pagination with inertia-aware wheel, touch swipe, and keyboard gestures.
-4. **Nested Scroll Arbitration & Deep Route Synchronization**: Intelligent boundary detection allowing tall internal page sections (e.g., Rabta contact dossier) to scroll naturally while maintaining bidirectional URL route synchronization and browser history fidelity.
+4. **Nested Scroll Arbitration & Deep Route Synchronization**: Intelligent boundary detection allowing tall internal page sections (e.g., the Contact section) to scroll naturally while maintaining bidirectional URL route synchronization and browser history fidelity.
 
 ---
 
@@ -38,19 +38,19 @@ The application architecture combines:
 │  │                    Full-Page Scroll Orchestrator                      │  │
 │  │  - Gesture Recognizer (Wheel, Touch Swipe, Keyboard)                  │  │
 │  │  - Scroll Debounce & Physics Lockout (750ms cooldown)                 │  │
-│  │  - Nested Scroll Boundary Arbiter (Rabta internal scroll protection)   │  │
+│  │  - Nested Scroll Boundary Arbiter (Contact internal scroll protection)│  │
 │  │  - History/Route Syncer (/, /pehchan, /rabta via replaceState)        │  │
 │  └───────────────────────────────────┬───────────────────────────────────┘  │
 │                                      │                                      │
 │     ┌────────────────────────────────┼────────────────────────────────┐     │
 │     ▼                                ▼                                ▼     │
 │ ┌──────────────────────┐   ┌──────────────────────┐   ┌───────────────────┐ │
-│ │ Section 01: Ibtida   │   │ Section 02: Pehchan  │   │ Section 03: Rabta │ │
+│ │ Sec 01: Home         │   │ Sec 02: Identity     │   │ Sec 03: Contact   │ │
 │ │                      │   │                      │   │                   │ │
 │ │ WebGL2 Fluid Engine  │   │ Editorial Identity   │   │ Direct Dispatch   │ │
 │ │ - Navier-Stokes      │   │ - 3 Core Principles  │   │ - WhatsApp Hook   │ │
-│ │ - Ping-Pong FBOs     │   │ - Industrial Layout  │   │ - Contact Form    │ │
-│ │ - Dual Canvas Layers │   │ - Asymmetrical Grid  │   │ - Tech Footprint  │ │
+│ │ - Ping-Pong FBOs     │   │ - Industrial Layout  │   │ - Call Action     │ │
+│ │ - Dual Canvas Layers │   │ - Asymmetrical Grid  │   │ - Store Map       │ │
 │ └──────────────────────┘   └──────────────────────┘   └───────────────────┘ │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -112,7 +112,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 </head>
 <body>
 <canvas id="c"></canvas>
-<a class="r" href="#rabta">Rabta</a>
+<a class="r" href="#rabta">Contact</a>
 <script>
 const cv=document.getElementById('c'),gl=cv.getContext('webgl2',{antialias:false});
 if(!gl||!(gl.getExtension('EXT_color_buffer_float')||gl.getExtension('EXT_color_buffer_half_float'))){document.body.textContent='WebGL2 chahiye.'}
@@ -178,8 +178,8 @@ function paint(tx,bg,fg,ln,W,H){
   x.font='600 '+12*k+'px Inter,sans-serif';
   if('letterSpacing' in x)x.letterSpacing=(.14*12*k)+'px';
   x.textAlign='left';x.fillRect(32*k,28*k,16*k,16*k);x.fillText('GE',56*k,37*k);
-  x.textAlign='right';x.fillText('RABTA',W-32*k,37*k);
-  x.textAlign='center';x.fillText('CURSOR HILAYEIN',W/2,H-40*k);
+  x.textAlign='right';x.fillText('CONTACT',W-32*k,37*k);
+  x.textAlign='center';x.fillText('MOVE CURSOR TO EXPLORE',W/2,H-40*k);
   gl.bindTexture(gl.TEXTURE_2D,tx.t);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,c);
 }
@@ -267,7 +267,7 @@ $$\nabla \cdot \mathbf{u} = 0$$
 - **Layer A (Base):** Background `#F8FAFC` (Chalk), Foreground `#0F172A` (Deep Ink), Traces `rgba(15,23,42,0.10)`.
 - **Layer B (Reveal):** Background `#059669` (Emerald Primary), Foreground `#F8FAFC` (Chalk), Traces `rgba(248,250,252,0.28)`.
 - **Procedural PCB Circuit Traces:** Linear Congruential Generator ($s_{n+1} = (s_n \cdot 16807) \pmod{2147483647}$ with seed $s_0 = 7$). Renders 80 multi-segment traces snapped to grid $g = 56 \times k$ with terminal pads of radius $3.5 \times k$.
-- **Typography & Font Readiness:** Space Grotesk 700 ("GREEN", "ELECTRONICS") and Inter 600 ("GE", "RABTA", "CURSOR HILAYEIN"). Layers MUST NOT be drawn until `document.fonts.load` confirms availability to prevent FOUT (Flash of Unstyled Text).
+- **Typography & Font Readiness:** Space Grotesk 700 ("GREEN", "ELECTRONICS") and Inter 600 ("GE", "CONTACT", "MOVE CURSOR TO EXPLORE"). Layers MUST NOT be drawn until `document.fonts.load` confirms availability to prevent FOUT (Flash of Unstyled Text).
 
 #### 2.5 React 19 & Next.js Lifecycle Requirements
 - **FR-2.1 (Component Encapsulation):** Encapsulated into `@/components/fluid-cursor-reveal.tsx` (client component `"use client"`).
@@ -281,14 +281,14 @@ $$\nabla \cdot \mathbf{u} = 0$$
 ### Feature 3: Full-Page Wheel & Touch Scroll Navigation System
 
 #### 3.1 Problem Statement
-Currently, visitors are forced to click top-bar navigation links (`Ibtida // 01`, `Pehchan // 02`, `Rabta // 03`) to view each page. The user requires a continuous presentation where scrolling down moves directly to the next section and scrolling up returns to the previous section, creating a tactile editorial narrative.
+Currently, visitors are forced to click top-bar navigation links (`Home // 01`, `Identity // 02`, `Contact // 03`) to view each page. The user requires a continuous presentation where scrolling down moves directly to the next section and scrolling up returns to the previous section, creating a tactile editorial narrative.
 
 #### 3.2 Navigation Architecture
 The application transitions from discrete, disjoint route loading to a **Unified Presentation Viewport**:
 - The homepage (`/`) contains all three primary sections in contiguous order:
-  - **Section 01: Ibtida** (Hero with WebGL2 Fluid Simulation & Cursor Reveal)
-  - **Section 02: Pehchan** (Brand Identity, "Saaf bijli, samjhdaar cheezein", 3 Core Principles)
-  - **Section 03: Rabta** (Store map directions, direct WhatsApp & phone actions)
+  - **Section 01: Home** (Hero with WebGL2 Fluid Simulation & Cursor Reveal)
+  - **Section 02: Identity** (Brand Identity, "Clean power, intelligent systems", 3 Core Principles)
+  - **Section 03: Contact** (Store map directions, direct WhatsApp & phone actions)
 - Each section occupies full viewport height (`100dvh` / `h-screen`).
 - The transition between sections is driven by hardware-accelerated transforms:
   $$\mathbf{Y}_{\text{offset}} = -(\text{currentSectionIndex} \times 100)\,\%$$
@@ -316,12 +316,12 @@ Trackpad and inertia-wheel users produce hundreds of wheel events per stroke.
 ### Feature 4: Viewport Arbitration, Nested Scrolling & Route Synchronization
 
 #### 4.1 Nested Scroll Arbitration (Internal Section Overflow)
-Section 03 (`Rabta`) is deliberately reduced to two high-impact elements — a tappable store-map card and two direct contact buttons — so it fits a full viewport on most screens. The arbiter remains as a safeguard for short or rotated viewports where the map's minimum height still overflows.
+Section 03 (`Contact`, route `/rabta`) is deliberately reduced to two high-impact elements — a tappable store-map card and a pair of circular contact buttons — so it fits a full viewport on most screens. The arbiter remains as a safeguard for short or rotated viewports where the map's minimum height still overflows.
 - **Arbitration Logic:**
   - When the user is on a section that has internal overflow (`scrollHeight > clientHeight`):
     - **Scrolling Down:** If `scrollTop + clientHeight < scrollHeight - 2`, the event MUST scroll the internal content downwards. The section transition to next section (or rubber-band bounce if on last section) is BLOCKED until internal scroll hits the bottom.
-    - **Scrolling Up:** If `scrollTop > 2`, the event MUST scroll the internal content upwards. Transition to Section 02 (`Pehchan`) is BLOCKED until `scrollTop <= 2`.
-  - This guarantees the entire map card and both contact actions remain reachable on constrained screens without accidental page switches.
+    - **Scrolling Up:** If `scrollTop > 2`, the event MUST scroll the internal content upwards. Transition to Section 02 (`Identity`) is BLOCKED until `scrollTop <= 2`.
+  - This guarantees the entire map card and both circular contact actions remain reachable on constrained screens without accidental page switches.
 
 #### 4.2 Deep Route & History Synchronization
 - **Bidirectional Sync:**
@@ -334,30 +334,30 @@ Section 03 (`Rabta`) is deliberately reduced to two high-impact elements — a t
 
 #### 4.3 Visual Pagination HUD & Header Synchronization
 - **Floating Pagination Ledger:** Fixed right-side indicator displaying active section notation:
-  - `01 // IBTIDA`
-  - `02 // PEHCHAN`
-  - `03 // RABTA`
+  - `01 // HOME`
+  - `02 // IDENTITY`
+  - `03 // CONTACT`
   - Interactive clickable dots allowing users to jump directly to any section.
-- **Header Navigation Bar Sync:** The top `SiteHeader` highlights the active item (`Ibtida // 01`, `Pehchan // 02`, `Rabta // 03`) according to the active section in real-time.
+- **Header Navigation Bar Sync:** The top `SiteHeader` highlights the active item (`Home // 01`, `Identity // 02`, `Contact // 03`) according to the active section in real-time.
 - **Mobile Responsive Safeguards:**
   - Viewports measured using dynamic viewport height (`100dvh`) to account for mobile browser address bars.
   - If screen height is below `560px` (landscape phones), enable standard natural vertical document scrolling to prevent layout clipping.
 
-#### 4.4 Rabta Contact Surface (Two-Element Composition)
+#### 4.4 Contact Surface (Two-Element Composition)
 Section 03 is a strict two-element surface. All legacy content — contact form, shop dossier, email terminal, opening-hours ledger, and technical footprint grid — is removed from the view.
 
 1. **Store Map Button Card**
    - Coordinates: `32°19'39.8"N 74°20'59.7"E` (`32.327722, 74.349917`) — Model Town, Daska.
    - The entire card is an `<a>` to `https://www.google.com/maps/dir/?api=1&destination=32.327722,74.349917`, opened in a new tab with `rel="noopener noreferrer"`.
    - Directions mode is pre-selected so mobile opens the Google Maps app with turn-by-turn navigation armed.
-   - Visual layer: dark night-map with city-block grid, arterial roads, contour lines, canal, area labels, coordinate crosshair, pulsating radar rings, and an emerald store pin. Hover/focus reveals the prompt `Rasta Maloom Karein // Get Directions (Google Maps)`.
+   - Visual layer: dark night-map with city-block grid, arterial roads, contour lines, canal, area labels, coordinate crosshair, pulsating radar rings, and an emerald store pin. Hover/focus reveals the prompt `Get Directions // Open Google Maps`.
    - The coordinates badge and `Model Town, Daska` store label stay visible at all times.
-2. **Direct Contact Actions (`03000841013`)**
-   - WhatsApp: `https://wa.me/923000841013` — emerald (`bg-primary`), WhatsApp glyph, label `WhatsApp Message`, number `0300 0841013`.
-   - Local call: `tel:03000841013` — high-contrast chalk on ink, phone glyph, label `Local Phone Call`, same number.
-   - Both are one-tap anchors with no intermediate form or confirmation step.
+2. **Direct Contact Actions (Circular Buttons)**
+   - WhatsApp: `https://wa.me/923000841013` — a 64px (`h-16 w-16`) emerald (`bg-primary`) circular button (`rounded-full`) with a centered WhatsApp glyph, hover scale, and the caption `WhatsApp`.
+   - Local call: `tel:03000841013` — a matching 64px chalk-on-ink circular button with a centered phone glyph, hover scale, and the caption `Call Us`.
+   - The phone number is never rendered as visible text or exposed in button labels/metadata; both buttons are one-tap anchors with no intermediate form or confirmation step.
 
-Responsive contract: the map uses `clamp(300px, 42vh, 440px)` height and the contact actions collapse to a single column below the `sm` breakpoint, with no horizontal overflow at 390×844, 1366×768, or 1920×1080.
+Responsive contract: the map uses `clamp(300px, 42vh, 440px)` height and the circular contact cluster remains horizontally centered within the section footer, with no horizontal overflow at 390×844, 1366×768, or 1920×1080.
 
 ---
 
@@ -375,7 +375,7 @@ Responsive contract: the map uses `clamp(300px, 42vh, 440px)` height and the con
    - Touch drag upwards $>50\text{px}$ advances to next section; touch drag downwards $>50\text{px}$ returns to previous section.
    - Arrow keys (`ArrowDown`, `ArrowUp`) step smoothly between sections.
 4. **Nested Content & Route Sync Verification:**
-   - On Section 03 (`Rabta`), internal content scrolls fully before allowing upward exit on constrained viewports.
+   - On Section 03 (`Contact`), internal content scrolls fully before allowing upward exit on constrained viewports.
    - Map card opens Google Maps Directions with destination `32.327722,74.349917`; WhatsApp opens `wa.me/923000841013`; call button dials `tel:03000841013`.
    - Browser URL updates to match active section; browser Back/Forward buttons navigate smoothly between sections.
 5. **Band Transition Verification:**

@@ -71,11 +71,11 @@ EOF
 print_banner() {
   printf '%b' "$COLOR_GREEN"
   cat <<'EOF'
-┌───────────────────────────────────────────────────┐
-│  GREEN ELECTRONICS // ASAL KHARA MAAL // DEV CLI  │
-│  Port: 3000 | Turbopack: Active | Cache: Clean    │
-│  Press Ctrl+C or Ctrl+Z to cleanly terminate.     │
-└───────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│  GREEN ELECTRONICS // GENUINE HARDWARE & ENGINEERING // DEV CLI  │
+│  Port: 3000 | Turbopack: Active | Cache: Clean                   │
+│  Press Ctrl+C or Ctrl+Z to cleanly terminate.                    │
+└──────────────────────────────────────────────────────────────────┘
 EOF
   printf '%b' "$COLOR_RESET"
 }
@@ -266,7 +266,7 @@ cleanup_and_exit() {
 
   force_free_port "$PRIMARY_PORT" >/dev/null 2>&1 || true
 
-  printf '%b[GE-SUCCESS]%b Ports freed. Environment sanitized. Khuda Hafiz!\n\n' \
+  printf '%b[GE-SUCCESS]%b Ports freed. Environment sanitized. Shutdown complete. Goodbye!\n\n' \
     "$COLOR_GREEN" "$COLOR_RESET"
   exit "$exit_code"
 }

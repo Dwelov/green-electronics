@@ -25,14 +25,14 @@ export function ContactForm() {
           className="block font-display text-label-sm uppercase tracking-wider text-chalk/70"
           htmlFor="caller-name"
         >
-          <span className="mr-1 text-primary">[ 01 ]</span> Naam (Name)
+          <span className="mr-1 text-primary">[ 01 ]</span> Name
         </label>
         <input
           autoComplete="name"
           className={FIELD_CLASS}
           id="caller-name"
           name="name"
-          placeholder="Aapka Poora Naam"
+          placeholder="Your full name"
           required
           type="text"
         />
@@ -50,7 +50,7 @@ export function ContactForm() {
           className={FIELD_CLASS}
           id="caller-phone"
           name="phone"
-          placeholder="0300 0000000"
+          placeholder="03XX XXXXXXX"
           required
           type="tel"
         />
@@ -61,13 +61,13 @@ export function ContactForm() {
           className="block font-display text-label-sm uppercase tracking-wider text-chalk/70"
           htmlFor="caller-message"
         >
-          <span className="mr-1 text-primary">[ 03 ]</span> Paigham (Message)
+          <span className="mr-1 text-primary">[ 03 ]</span> Message
         </label>
         <textarea
           className={`${FIELD_CLASS} resize-none p-4`}
           id="caller-message"
           name="message"
-          placeholder="Required parts, electrical specifications, ya koi sawaal..."
+          placeholder="Required parts, electrical specifications, or any questions..."
           required
           rows={4}
         />
@@ -85,7 +85,7 @@ export function ContactForm() {
           className="cursor-pointer select-none font-sans text-body-sm text-chalk/60"
           htmlFor="hardware-ack"
         >
-          Mey taa-yyeed karta hoon ke details darust hain
+          I confirm these details are correct
         </label>
       </div>
 
@@ -93,7 +93,7 @@ export function ContactForm() {
         className="flex w-full items-center justify-center gap-3 rounded-none bg-primary px-6 py-4 font-display text-label-md uppercase tracking-wider text-chalk transition-colors duration-150 hover:bg-primary-deep"
         type="submit"
       >
-        <span>Bhejein</span>
+        <span>Send</span>
         <SendIcon className="h-[18px] w-[18px]" />
       </button>
 
@@ -104,10 +104,11 @@ export function ContactForm() {
         >
           <p className="flex items-center gap-2 font-display text-label-sm font-bold uppercase text-primary">
             <CheckCircleIcon className="h-4 w-4" />
-            Murasla Mosool Hua
+            Message Received
           </p>
           <p className="mt-1 font-sans text-body-sm text-chalk/70">
-            Aapka paigham darj ho chuka hai. Hamara numainda jald rabta karega.
+            Your message has been logged. A representative will contact you
+            shortly.
           </p>
         </div>
       ) : null}

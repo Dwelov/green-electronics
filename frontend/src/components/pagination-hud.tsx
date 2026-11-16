@@ -1,9 +1,9 @@
 "use client";
 
 const SECTIONS = [
-  { code: "01", label: "Ibtida" },
-  { code: "02", label: "Pehchan" },
-  { code: "03", label: "Rabta" },
+  { code: "01", label: "Home" },
+  { code: "02", label: "Identity" },
+  { code: "03", label: "Contact" },
 ] as const;
 
 type PaginationHUDProps = {

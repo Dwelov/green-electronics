@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { PresentationOrchestrator } from "@/components/presentation-orchestrator";
 
 export const metadata: Metadata = {
-  title: "Pehchan",
+  title: "Identity",
   description:
-    "Saaf bijli, samjhdaar cheezein. Asli products, wajib qeemat aur bharosay ki service — Green Electronics Pakistan.",
+    "Clean power, intelligent systems. Authentic components, fair and transparent pricing, and trusted engineering support — Green Electronics Pakistan.",
 };
 
 export default function PehchanPage() {

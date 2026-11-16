@@ -10,11 +10,11 @@ export function SiteFooter() {
             /
           </span>
           <span className="font-display text-technical-code uppercase text-muted">
-            Paiydar Funn
+            Enduring Engineering
           </span>
         </div>
         <div className="font-display text-technical-code uppercase text-muted">
-          © 2024 Green Electronics. Asal Khara Maal.
+          © 2024 Green Electronics. Genuine Hardware &amp; Engineering.
         </div>
       </div>
     </footer>

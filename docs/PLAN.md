@@ -341,8 +341,8 @@ Build the high-resolution offscreen 2D canvas generation system that dynamically
    - Technical Markers:
      - Font: `600 ${12 * k}px Inter, sans-serif`, letter-spacing $0.14 \times 12 \times k$.
      - Terminal square `[GE]` badge: `fillRect(32*k, 28*k, 16*k, 16*k)`, text "GE" at $(56*k, 37*k)$.
-     - Right ledger: "RABTA" at $(W - 32*k, 37*k)$.
-     - Bottom technical command: "[ CURSOR HILAYEIN ]" at $(W/2, H - 40*k)$.
+     - Right ledger: "CONTACT" at $(W - 32*k, 37*k)$.
+     - Bottom technical command: "[ MOVE CURSOR TO EXPLORE ]" at $(W/2, H - 40*k)$.
 4. **Texture Upload & Font Loading Synchronization:**
    - Wait for `Promise.all([document.fonts.load('700 64px "Space Grotesk"'), document.fonts.load('600 12px Inter')])`.
    - On load (and on window resize with debounce), invoke `build()`:
@@ -454,7 +454,7 @@ Implement pointer velocity splatting, multi-touch handling, autonomous idle anim
 ### Phase 3.1: Unified Presentation Shell & Section Viewport Layout
 
 #### 1. Objective & Scope
-Construct the unified full-page presentation shell (`frontend/src/components/presentation-orchestrator.tsx`) that embeds Section 01 (`Ibtida`), Section 02 (`Pehchan`), and Section 03 (`Rabta`) into a seamless vertical viewport slider, replacing isolated route transitions.
+Construct the unified full-page presentation shell (`frontend/src/components/presentation-orchestrator.tsx`) that embeds Section 01 (`Home`), Section 02 (`Identity`), and Section 03 (`Contact`) into a seamless vertical viewport slider, replacing isolated route transitions.
 
 #### 2. Affected Files
 - `frontend/src/components/presentation-orchestrator.tsx` (New component)
@@ -466,7 +466,7 @@ Construct the unified full-page presentation shell (`frontend/src/components/pre
 #### 3. Precise Implementation Plan
 1. **Section Architecture:**
    - Section 01: `IbtidaSection` — contains the WebGL2 Fluid Cursor Reveal engine and technical ledgers.
-   - Section 02: `PehchanSection` — contains "Saaf bijli, samjhdaar cheezein" and 3 principle cards.
+   - Section 02: `PehchanSection` — contains "Clean power, intelligent systems" and 3 principle cards.
    - Section 03: `RabtaSection` — two-element contact surface: tappable store-map card with Google Maps directions plus direct WhatsApp and phone actions.
 2. **Container CSS Transform Engine:**
    - Outer container: `fixed inset-0 w-full h-[100dvh] overflow-hidden bg-chalk`.
@@ -546,15 +546,15 @@ Build the high-precision gesture recognition engine that normalizes trackpad and
   - Assert touch swipe down triggers `goToPrev()`.
 
 ##### Manual Verification Checklist
-1. Scroll down using mouse wheel: page smoothly glides to Section 02 (`Pehchan`).
-2. Scroll down again: page glides to Section 03 (`Rabta`).
+1. Scroll down using mouse wheel: page smoothly glides to Section 02 (`Identity`).
+2. Scroll down again: page glides to Section 03 (`Contact`).
 3. Scroll up: page returns smoothly to Section 02, then Section 01.
 4. Repeatedly flick the trackpad vigorously: confirm page advances by exactly ONE section per deliberate flick, never skipping directly from Section 01 to 03.
 5. Press `ArrowDown` and `ArrowUp`: verify immediate smooth slide.
 
 ##### Edge Cases & Stress Scenarios
 - High-frequency gaming mouse wheel: debounce prevents runaway index changes.
-- Focus inside an input field in the contact form: typing spacebar does NOT trigger page scroll.
+- Focus inside an input field: typing spacebar does NOT trigger page scroll.
 
 ##### Phase Exit Criteria
 - [x] Zero accidental multi-slide skips on trackpad flick.
@@ -567,24 +567,24 @@ Build the high-precision gesture recognition engine that normalizes trackpad and
 ### Phase 4.1: Nested Scroll Arbitration & Internal Overflow Handling
 
 #### 1. Objective & Scope
-Keep boundary detection for sections whose content can exceed the viewport height (specifically Section 03 `Rabta`), allowing internal content to scroll to the bottom before blocking downward movement, and scrolling up to the top before triggering section transition back to Section 02. Section 03 itself is simplified to two elements — a store-map directions card and two direct contact buttons — so overflow only occurs on short or rotated viewports.
+Keep boundary detection for sections whose content can exceed the viewport height (specifically Section 03 `Contact`), allowing internal content to scroll to the bottom before blocking downward movement, and scrolling up to the top before triggering section transition back to Section 02. Section 03 itself is simplified to two elements — a store-map directions card and a pair of circular contact buttons — so overflow only occurs on short or rotated viewports.
 
 #### 2. Affected Files
 - `frontend/src/components/presentation-orchestrator.tsx`
 - `frontend/src/components/sections/rabta-section.tsx`
 
 #### 3. Precise Implementation Plan
-1. **Simplified Rabta Composition:**
+1. **Simplified Contact Composition:**
    - Remove `ContactForm`, the contact dossier rows (email, phone desk, address ledger, opening hours), and the technical footprint grid.
-   - Render an editorial header (`[ 03 // Rabta ]`, `Humse Rabta Karein`, open/standby status badge).
-   - Render a full-width map button card anchored to `https://www.google.com/maps/dir/?api=1&destination=32.327722,74.349917`, showing coordinates `32°19'39.8"N 74°20'59.7"E` and the Model Town, Daska store label.
-   - Render two action buttons: WhatsApp (`https://wa.me/923000841013`) and local call (`tel:03000841013`) for `0300 0841013`.
+   - Render an editorial header (`[ 03 // Contact ]`, `Get In Touch`, `Open // Active` status badge).
+   - Render a full-width map button card anchored to `https://www.google.com/maps/dir/?api=1&destination=32.327722,74.349917`, showing coordinates `32°19'39.8"N 74°20'59.7"E` and the Model Town, Daska store label, with the hover prompt `Get Directions // Open Google Maps`.
+   - Render two 64px circular contact buttons (`h-16 w-16 rounded-full`, centered icons, hover scale): WhatsApp (`https://wa.me/923000841013`) and local call (`tel:03000841013`). Captions read `WhatsApp` and `Call Us`; the phone number is never rendered as visible text.
 2. **Container Reference & Overflow Detection:**
    - Attach `ref={rabtaScrollContainerRef}` to Section 03's scrollable container.
    - Overflow condition: `isScrollable = container.scrollHeight > container.clientHeight + 4`.
-   - The map card height uses `clamp(300px, 42vh, 440px)`; contact actions stack on mobile and sit in two columns from `sm` upward.
+   - The map card height uses `clamp(300px, 42vh, 440px)`; the circular contact cluster stays horizontally compact at every breakpoint.
 3. **Boundary Arbitration Rules:**
-   - When `activeIndex === 2` (Rabta Section):
+   - When `activeIndex === 2` (Contact Section):
      - **User Scrolls DOWN (`deltaY > 0`):**
        - Check remaining bottom scroll:
          `remainingScroll = container.scrollHeight - (container.scrollTop + container.clientHeight)`.
@@ -600,11 +600,11 @@ Keep boundary detection for sections whose content can exceed the viewport heigh
          - Allow event to scroll the container upwards natively.
          - Cancel transition to Section 02.
        - If `currentTop <= 2`:
-         - We have reached the very top of Rabta.
-         - The NEXT upward scroll gesture triggers `goToPrev()`, transitioning smoothly back to Section 02 (`Pehchan`).
+         - We have reached the very top of Contact.
+         - The NEXT upward scroll gesture triggers `goToPrev()`, transitioning smoothly back to Section 02 (`Identity`).
 4. **Scroll Smoothing & Touch Interaction in Overflowing Section:**
    - Apply `-webkit-overflow-scrolling: touch` and `overflow-y: auto` to Section 03 content.
-   - On touch swipe in Rabta, check if container is at boundary before intercepting swipe.
+   - On touch swipe in Contact, check if container is at boundary before intercepting swipe.
 
 #### 4. Verification Tests
 
@@ -620,13 +620,13 @@ Keep boundary detection for sections whose content can exceed the viewport heigh
 - Build validation: `cd frontend && npx tsc --noEmit && npm run lint && npm run build`.
 
 ##### Manual Verification Checklist
-1. Navigate to Section 03 (`Rabta`) on a laptop screen (e.g. 1366x768 or 1080p).
-2. Confirm only the header, map card, and two contact buttons render — no form, dossier, or footprint table.
+1. Navigate to Section 03 (`Contact`) on a laptop screen (e.g. 1366x768 or 1080p).
+2. Confirm only the header, map card, and two circular contact buttons render — no form, dossier, or footprint table.
 3. Tap the map card: Google Maps opens in a new tab in Directions mode with destination `32.327722,74.349917`.
-4. Tap WhatsApp: opens `https://wa.me/923000841013`. Tap call: invokes `tel:03000841013`.
-5. On a short viewport, scroll down with mouse wheel: observe that the map and buttons scroll smoothly into view.
-6. Once at the bottom, scroll up slightly: observe that the page scrolls up within Rabta.
-7. Scroll all the way up until the header is visible; scroll up one more flick: observe smooth transition back to Section 02 (`Pehchan`).
+4. Confirm no phone number is visible anywhere in the contact UI. Tap the round WhatsApp button: opens `https://wa.me/923000841013`. Tap the round call button: invokes `tel:03000841013`.
+5. On a short viewport, scroll down with mouse wheel: observe that the map and circular buttons scroll smoothly into view.
+6. Once at the bottom, scroll up slightly: observe that the page scrolls up within Contact.
+7. Scroll all the way up until the header is visible; scroll up one more flick: observe smooth transition back to Section 02 (`Identity`).
 
 ##### Edge Cases & Stress Scenarios
 - Resize browser window from large desktop to small netbook: internal overflow recalculated dynamically.
@@ -634,9 +634,9 @@ Keep boundary detection for sections whose content can exceed the viewport heigh
 - 390×844 portrait and 1920×1080 desktop: no horizontal scrollbar, no clipped contact buttons.
 
 ##### Phase Exit Criteria
-- [x] Rabta contains exactly the map directions card and the two direct contact actions.
-- [x] Internal content in Rabta is 100% accessible and readable.
-- [x] Upward transition to Pehchan occurs only when Rabta is scrolled to the top.
+- [x] Contact contains exactly the map directions card and the two circular contact actions.
+- [x] Internal content in Contact is 100% accessible and readable.
+- [x] Upward transition to Identity occurs only when Contact is scrolled to the top.
 
 ---
 
@@ -702,7 +702,7 @@ Synchronize active presentation sections with browser URL routes (`/`, `/pehchan
 ### Phase 4.3: Visual Pagination HUD & Header Navigation Synchronization
 
 #### 1. Objective & Scope
-Add an interactive floating HUD indicator on the right viewport edge showing the active section (`01 // IBTIDA`, `02 // PEHCHAN`, `03 // RABTA`) with clickable direct-jump dots, and synchronize the top `SiteHeader` active indicators.
+Add an interactive floating HUD indicator on the right viewport edge showing the active section (`01 // HOME`, `02 // IDENTITY`, `03 // CONTACT`) with clickable direct-jump dots, and synchronize the top `SiteHeader` active indicators.
 
 #### 2. Affected Files
 - `frontend/src/components/presentation-orchestrator.tsx`
@@ -713,16 +713,16 @@ Add an interactive floating HUD indicator on the right viewport edge showing the
 1. **Floating Pagination HUD (`PaginationHUD`):**
    - Fixed to right edge: `fixed right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-5`.
    - Render 3 technical indicator nodes:
-     - Node 01: `01` dot + label `IBTIDA` (visible on hover or active)
-     - Node 02: `02` dot + label `PEHCHAN`
-     - Node 03: `03` dot + label `RABTA`
+     - Node 01: `01` dot + label `HOME` (visible on hover or active)
+     - Node 02: `02` dot + label `IDENTITY`
+     - Node 03: `03` dot + label `CONTACT`
    - Active state styling:
      - Active dot: Emerald green `#059669` expanded pill (`h-7 w-1.5 bg-primary`).
      - Inactive dot: Subtle outline dot (`h-2 w-1.5 bg-ink/20 hover:bg-ink/60`).
    - Click handler: clicking node $i$ triggers `goToSection(i)` with smooth animation.
 2. **`SiteHeader` Real-Time Synchronization:**
    - Pass `activeIndex` (or connect via lightweight state/context) to `SiteHeader`.
-   - Highlight the current link (`Ibtida // 01`, `Pehchan // 02`, `Rabta // 03`) with active font weight and primary green color.
+   - Highlight the current link (`Home // 01`, `Identity // 02`, `Contact // 03`) with active font weight and primary green color.
    - Clicking header links calls `goToSection(i)` smoothly instead of causing full page reload.
 3. **Mobile & Viewport Polish:**
    - Dynamic Viewport Units: Use `100dvh` everywhere to avoid mobile browser navigation bar jumps.
@@ -738,10 +738,10 @@ Add an interactive floating HUD indicator on the right viewport edge showing the
 
 ##### Manual Verification Checklist
 1. Look at the right edge of the screen: verify 3 technical indicator nodes.
-2. Click `02 // PEHCHAN` dot: page glides directly to Section 02.
-3. Click `03 // RABTA` dot: page glides directly to Section 03.
+2. Click `02 // IDENTITY` dot: page glides directly to Section 02.
+3. Click `03 // CONTACT` dot: page glides directly to Section 03.
 4. Verify `SiteHeader` nav items highlight the active section synchronously.
-5. Click "Rabta" button in header: page glides to Section 03.
+5. Click "Contact" button in header: page glides to Section 03.
 
 ##### Phase Exit Criteria
 - [x] Pagination HUD reflects active section with zero lag.
@@ -879,7 +879,7 @@ Integrate `BandTransition` into `PresentationOrchestrator` to power discrete sec
    - Add state: `const [isBandTransitioning, setIsBandTransitioning] = useState(false);`
    - Add ref: `const pendingSectionRef = useRef<number | null>(null);`
 2. **Direct Navigation Hooking (`handleDirectNavigate`):**
-   - When a user clicks a nav link (`Ibtida // 01`, `Pehchan // 02`, `Rabta // 03`) or a HUD dot:
+   - When a user clicks a nav link (`Home // 01`, `Identity // 02`, `Contact // 03`) or a HUD dot:
      - If already at that section or already transitioning, ignore.
      - Store target section: `pendingSectionRef.current = targetIndex;`
      - Initiate transition: `setIsBandTransitioning(true);`
@@ -914,12 +914,12 @@ Integrate `BandTransition` into `PresentationOrchestrator` to power discrete sec
   `cd frontend && npm run lint`
 
 ##### Manual Verification Checklist
-1. Click `Pehchan // 02` in `SiteHeader`:
+1. Click `Identity // 02` in `SiteHeader`:
    - 5 dark bands wipe across screen with 0.1s stagger.
-   - At complete occlusion, page updates to Pehchan.
+   - At complete occlusion, page updates to Identity.
    - Bands wipe out revealing Section 02.
-2. Click `03 // RABTA` dot in `PaginationHUD`:
-   - Band transition fires cleanly, revealing Rabta.
+2. Click `03 // CONTACT` dot in `PaginationHUD`:
+   - Band transition fires cleanly, revealing Contact.
 3. Scroll mouse wheel:
    - Verify normal continuous glide still functions smoothly.
 
@@ -978,7 +978,7 @@ Harden the band transition for mobile viewports, rapid double-clicks, and access
 | **F2: WebGL2 Fluid** | 2.3 Physics & Loop | 60fps frame rate check & unmount leak test | 60fps animation, autonomous sweep, 0 GPU leaks |
 | **F3: Full-Page Nav** | 3.1 Presentation Shell | DOM tree & CSS transform inspection | 3 full-height sections rendered, 0 layout shifts |
 | **F3: Full-Page Nav** | 3.2 Gesture Engine | Kinetic lockout & trackpad burst simulation | Single flick advances 1 section; no multi-skips |
-| **F4: Viewport & Route** | 4.1 Nested Arbiter | Boundary scroll testing on Rabta section | Internal scroll completes before page exit |
+| **F4: Viewport & Route** | 4.1 Nested Arbiter | Boundary scroll testing on Contact section | Internal scroll completes before page exit |
 | **F4: Viewport & Route** | 4.2 Route Sync | URL inspection & browser Back/Forward test | URL updates dynamically; back button navigates |
 | **F4: Viewport & Route** | 4.3 HUD & Polish | Click interaction on HUD dots & header links | Instant smooth jump to target section |
 | **F5: Band Transition** | 5.1 CLI & Scaffolding | `components.json` check & CLI component addition | Component and skills scaffolded without error |

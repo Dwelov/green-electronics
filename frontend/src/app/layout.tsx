@@ -17,11 +17,11 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: {
-    default: "Green Electronics — Asal Khara Maal",
+    default: "Green Electronics — Genuine Hardware & Engineering",
     template: "%s — Green Electronics",
   },
   description:
-    "Local hardware engineering. Asal products, wajib qeemat, bharosay ki service — Green Electronics Pakistan. Model Town, Daska (32°19'39.8\"N 74°20'59.7\"E).",
+    "Local hardware engineering for Pakistan. Authentic components, fair and transparent pricing, and trusted engineering support — Green Electronics, Model Town, Daska (32°19'39.8\"N 74°20'59.7\"E).",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

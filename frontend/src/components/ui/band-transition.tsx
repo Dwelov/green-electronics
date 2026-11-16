@@ -70,7 +70,7 @@ function getReducedMotionServerSnapshot() {
 export function BandTransition({
   color = "#151515",
   bands = 5,
-  duration = 0.6,
+  duration = 0.4,
   stagger = 0.5,
   isTransitioning,
   onMidpoint,
