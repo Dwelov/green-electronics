@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/components/icons";
 
@@ -17,13 +17,9 @@ export interface AnimatedTestimonialsProps {
   className?: string;
 }
 
-/**
- * Deterministic pseudo-random rotation for inactive cards.
- * Seeded by index to ensure consistent layout across renders.
- */
-function randomRotateY(index: number): number {
-  const seed = (index * 9301 + 49297) % 233280;
-  return (seed / 233280) * 20 - 10; // -10° to +10°
+/** Deterministic seeded rotation so inactive stack cards are always consistent. */
+function seedRotate(index: number): number {
+  return ((index * 7919 + 1) % 21) - 10; // –10° to +10°
 }
 
 export function AnimatedTestimonials({
@@ -31,182 +27,139 @@ export function AnimatedTestimonials({
   autoplay = false,
   className = "",
 }: AnimatedTestimonialsProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
-    if (typeof window !== "undefined") {
-      return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    }
-    return false;
-  });
-  const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [active, setActive] = useState(0);
 
+  const handleNext = useCallback(() => {
+    setActive((prev) => (prev + 1) % testimonials.length);
+  }, [testimonials.length]);
+
+  const handlePrev = useCallback(() => {
+    setActive((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  }, [testimonials.length]);
+
+  // Keyboard navigation
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, []);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") handlePrev();
+      if (e.key === "ArrowRight") handleNext();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [handlePrev, handleNext]);
 
+  // Autoplay
   useEffect(() => {
     if (!autoplay) return;
-    autoplayRef.current = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % testimonials.length);
-    }, 6000);
-    return () => {
-      if (autoplayRef.current) clearInterval(autoplayRef.current);
-    };
-  }, [autoplay, testimonials.length]);
+    const id = setInterval(handleNext, 5000);
+    return () => clearInterval(id);
+  }, [autoplay, handleNext]);
 
-  const goToPrev = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  }, [testimonials.length]);
-
-  const goToNext = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % testimonials.length);
-  }, [testimonials.length]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") goToPrev();
-      if (e.key === "ArrowRight") goToNext();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [goToPrev, goToNext]);
-
-  const splitWords = (text: string) =>
-    text.split(" ").map((word, i) => (
-      <motion.span
-        key={i}
-        initial={{ filter: "blur(10px)", opacity: 0, y: 5 }}
-        animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
-        transition={{
-          delay: 0.02 * i,
-          duration: 0.2,
-          ease: "easeOut",
-        }}
-        style={{ display: "inline-block" }}
-      >
-        {word}
-      </motion.span>
-    ));
+  const isActive = (index: number) => index === active;
 
   return (
-    <section
-      className={`relative w-full flex flex-col items-center gap-8 md:gap-12 ${className}`}
-      aria-label="Services carousel"
+    <div
+      className={`mx-auto w-full max-w-sm px-4 py-20 font-sans antialiased md:max-w-4xl md:px-8 lg:px-12 ${className}`}
     >
-      <div className="relative w-full max-w-5xl">
-        <AnimatePresence mode="wait">
-          {testimonials.map((item, index) => {
-            const isActive = index === activeIndex;
-
-            return (
+      <div className="relative grid grid-cols-1 gap-20 md:grid-cols-2">
+        {/* ── Left: Stacked image cards ── */}
+        <div>
+          <div className="relative h-80 w-full">
+            {testimonials.map((item, index) => (
               <motion.div
-                key={item.name}
-                layout
-                initial={prefersReducedMotion
-                  ? { opacity: 0 }
-                  : { opacity: 0, scale: 0.9, z: 100 }}
-                animate={prefersReducedMotion
-                  ? { opacity: isActive ? 1 : 0 }
-                  : isActive
-                  ? {
-                      opacity: 1,
-                      scale: 1,
-                      z: 0,
-                      rotate: 0,
-                      zIndex: 30,
-                      y: [0, -80, 0],
-                    }
-                  : {
-                      opacity: 0.7,
-                      scale: 0.95,
-                      z: -100,
-                      rotate: randomRotateY(index),
-                    }}
-                exit={prefersReducedMotion
-                  ? { opacity: 0 }
-                  : { opacity: 0, scale: 0.9, z: 100 }}
+                key={item.src}
+                initial={{
+                  opacity: 0,
+                  scale: 0.9,
+                  z: -100,
+                  rotate: seedRotate(index),
+                }}
+                animate={{
+                  opacity: isActive(index) ? 1 : 0.7,
+                  scale: isActive(index) ? 1 : 0.95,
+                  z: isActive(index) ? 0 : -100,
+                  rotate: isActive(index) ? 0 : seedRotate(index),
+                  zIndex: isActive(index)
+                    ? testimonials.length + 1
+                    : testimonials.length - index,
+                  y: isActive(index) ? [0, -80, 0] : 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.9,
+                  z: 100,
+                }}
                 transition={{
                   duration: 0.4,
                   ease: "easeInOut",
                 }}
-                style={{
-                  position: isActive ? "relative" : "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  zIndex: isActive ? 30 : index,
-                }}
-                className="w-full"
+                className="absolute inset-0 origin-bottom"
               >
-                <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
-                  {/* Image Stack (Left) */}
-                  <div className="relative order-2 md:order-1">
-                    <div className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden rounded-none bg-ink/20">
-                      <img
-                        src={item.src}
-                        alt={item.name}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        loading={isActive ? "eager" : "lazy"}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Description & Controls (Right) */}
-                  <div className="flex flex-col items-start md:items-end justify-center gap-6 order-1 md:order-2 text-right md:text-left px-2">
-                    <div className="w-full">
-                      <p className="font-display text-technical-code uppercase tracking-widest text-chalk/55 text-sm">
-                        {item.designation}
-                      </p>
-                      <h3 className="mt-2 font-display text-[28px] sm:text-[32px] font-bold uppercase leading-[0.95] tracking-tight text-ink">
-                        {item.name}
-                      </h3>
-                      <p className="mt-4 font-sans text-body-md leading-relaxed text-chalk/70 max-w-md">
-                        {splitWords(item.quote)}
-                      </p>
-                    </div>
-
-                    {/* Navigation Controls */}
-                    <div className="flex items-center gap-4 pt-4 border-t border-chalk/20 w-full justify-end md:justify-start">
-                      <button
-                        onClick={goToPrev}
-                        className="group flex h-12 w-12 items-center justify-center rounded-full bg-chalk/50 text-ink transition-all duration-200 hover:bg-chalk hover:text-ink hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                        aria-label="Previous service"
-                        disabled={prefersReducedMotion && false}
-                      >
-                        <motion.span
-                          animate={{
-                            rotate: prefersReducedMotion ? 0 : 0,
-                          }}
-                          className="group-hover:rotate-12 transition-transform duration-200"
-                        >
-                          <ChevronLeftIcon className="h-6 w-6" />
-                        </motion.span>
-                      </button>
-                      <button
-                        onClick={goToNext}
-                        className="group flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white transition-all duration-200 hover:bg-primary-deep hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                        aria-label="Next service"
-                      >
-                        <motion.span
-                          animate={{
-                            rotate: prefersReducedMotion ? 0 : 0,
-                          }}
-                          className="group-hover:-rotate-12 transition-transform duration-200"
-                        >
-                          <ChevronRightIcon className="h-6 w-6" />
-                        </motion.span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <img
+                  src={item.src}
+                  alt={item.name}
+                  width={500}
+                  height={500}
+                  draggable={false}
+                  className="h-full w-full rounded-3xl object-cover object-center"
+                />
               </motion.div>
-            );
-          })}
-        </AnimatePresence>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Right: Text content ── */}
+        <div className="flex flex-col justify-between py-4">
+          <motion.div
+            key={active}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+          >
+            <h3 className="text-2xl font-bold text-ink">
+              {testimonials[active].name}
+            </h3>
+            <p className="text-sm text-ink/50">
+              {testimonials[active].designation}
+            </p>
+            <motion.p className="mt-8 text-lg text-ink/70">
+              {testimonials[active].quote.split(" ").map((word, i) => (
+                <motion.span
+                  key={`${active}-${i}`}
+                  initial={{ filter: "blur(10px)", opacity: 0, y: 5 }}
+                  animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.2,
+                    ease: "easeInOut",
+                    delay: 0.02 * i,
+                  }}
+                  className="inline-block text-ink/80"
+                >
+                  {word}&nbsp;
+                </motion.span>
+              ))}
+            </motion.p>
+          </motion.div>
+
+          {/* Navigation buttons */}
+          <div className="flex gap-4 pt-12 md:pt-0">
+            <button
+              onClick={handlePrev}
+              className="group/button flex h-10 w-10 items-center justify-center rounded-full bg-ink/10 hover:bg-ink/20 transition-colors"
+              aria-label="Previous service"
+            >
+              <ChevronLeftIcon className="h-5 w-5 text-ink transition-transform duration-300 group-hover/button:rotate-12" />
+            </button>
+            <button
+              onClick={handleNext}
+              className="group/button flex h-10 w-10 items-center justify-center rounded-full bg-ink/10 hover:bg-ink/20 transition-colors"
+              aria-label="Next service"
+            >
+              <ChevronRightIcon className="h-5 w-5 text-ink transition-transform duration-300 group-hover/button:-rotate-12" />
+            </button>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }
