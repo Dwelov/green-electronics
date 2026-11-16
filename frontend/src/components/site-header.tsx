@@ -10,9 +10,9 @@ type SiteHeaderProps = {
 };
 
 const NAV_ITEMS = [
-  { index: 0, href: "/", label: "Home // 01" },
-  { index: 1, href: "/pehchan", label: "Services // 02" },
-  { index: 2, href: "/rabta", label: "Contact // 03" },
+  { index: 0, href: "/", label: "Home" },
+  { index: 1, href: "/pehchan", label: "Services" },
+  { index: 2, href: "/rabta", label: "Contact" },
 ] as const;
 
 export function SiteHeader({ activeIndex, onNavigate }: SiteHeaderProps) {
