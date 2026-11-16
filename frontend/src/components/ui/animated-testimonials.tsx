@@ -58,12 +58,12 @@ export function AnimatedTestimonials({
 
   return (
     <div
-      className={`mx-auto w-full max-w-sm px-4 py-20 font-sans antialiased md:max-w-4xl md:px-8 lg:px-12 ${className}`}
+      className={`w-full py-10 font-sans antialiased ${className}`}
     >
-      <div className="relative grid grid-cols-1 gap-20 md:grid-cols-2">
+      <div className="relative grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16 items-center">
         {/* ── Left: Stacked image cards ── */}
         <div>
-          <div className="relative h-80 w-full">
+          <div className="relative h-64 w-full md:h-72">
             {testimonials.map((item, index) => (
               <motion.div
                 key={item.src}

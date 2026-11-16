@@ -26,19 +26,10 @@ export function PaginationHUD({ activeIndex, onSelect }: PaginationHUDProps) {
             key={section.code}
             aria-current={isActive ? "step" : undefined}
             aria-label={`Jump to section ${section.code} ${section.label}`}
-            className="group flex items-center gap-3"
+            className="group flex items-center"
             onClick={() => onSelect(index)}
             type="button"
           >
-            <span
-              className={`hidden rounded-sm bg-chalk/85 px-2 py-1 font-display text-technical-code font-bold uppercase tracking-widest text-ink shadow-sm backdrop-blur-sm transition-opacity duration-200 sm:inline-block ${
-                isActive
-                  ? "opacity-100"
-                  : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
-              }`}
-            >
-              {`${section.code} // ${section.label}`}
-            </span>
             <span
               aria-hidden="true"
               className={`block w-1.5 rounded-full transition-all duration-300 ${
