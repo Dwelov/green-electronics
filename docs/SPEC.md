@@ -426,3 +426,59 @@ The component strictly implements the Atelier UI specification with the required
     3. **Exit Phase (Wipe Out)**: Bands retract or slide out in the same staggered sequence, smoothly unveiling the target section.
   - **Fluid Shader Safety**: The WebGL2 canvas in Section 01 remains undisturbed; no canvas re-allocation or WebGL context recreation is triggered during the band wipe.
   - **Accessibility**: Honors `prefers-reduced-motion` by disabling the staggered wipe and falling back to an instant or simple 150ms opacity crossfade.
+
+---
+
+## 6. Feature 6: Section 02 Services Carousel (Animated Testimonials Engine)
+
+### 6.1 Problem Statement & Aesthetic Intent
+Section 02 originally presented a static editorial manifesto ("Clean power, intelligent systems." with three bullet points). To showcase the primary hardware engineering capabilities of Green Electronics in a tactile, modern manner, Section 02 is transformed into a specialized **Services Carousel** using Aceternity UI's `AnimatedTestimonials` 3D card-rotation architecture.
+
+The section opens with the prominent industrial headline **"OUR SERVICES"**, followed by an interactive 3D card stack showcasing the four core repair domains: Air Conditioners (AC), Microwave & Electric Ovens, Automatic Washing Machines, and Printed Circuit Boards (PCBs).
+
+### 6.2 Component Specification & Motion Architecture
+The component is implemented at `@/components/ui/animated-testimonials.tsx` using `motion/react`:
+- **3D Stack of Cards**:
+  - Inactive cards tilt with deterministic pseudo-random rotations (`rotate: randomRotateY()` between $-10^\circ$ and $+10^\circ$), scaled down (`scale: 0.95`), and placed behind in $z$-space (`z: -100`).
+  - Active card lifts forward with smooth vertical keyframe displacement (`y: [0, -80, 0]`), scale $1.0$, opacity $1.0$, and $z$-index elevation.
+  - Smooth easing curves (`ease: "easeInOut"`, duration $0.4\,\text{s}$).
+- **Word-by-Word Text Animation**:
+  - The quote/description text animates dynamically with a staggered blur filter reveal (`filter: "blur(10px)"` $\rightarrow$ `filter: "blur(0px)"`) on slide transitions.
+- **Interactive Navigation Controls**:
+  - Left and right circular control buttons with 3D rotate hover effects (`group-hover:rotate-12` / `group-hover:-rotate-12`).
+  - Keyboard navigation (Arrow keys) and optional autoplay support.
+
+### 6.3 Services Data Architecture & Content Matrix
+The carousel displays 4 specialized hardware repair categories:
+
+1. **Air Conditioner (AC) Repair & Servicing**:
+   - **Name**: `Air Conditioner (AC) Repair`
+   - **Designation**: `HVAC & Inverter Systems // Unit 01`
+   - **Photo (`src`)**: `https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2069&auto=format&fit=crop`
+   - **Description (`quote`)**: `Comprehensive diagnostics and repairs for inverter split, multi-split, and commercial air conditioning units. Precision refrigerant leak detection, R410A/R32 gas charging, compressor inverter PCB circuit restoration, and deep chemical wash servicing.`
+
+2. **Microwave & Electric Oven Repairing**:
+   - **Name**: `Microwave & Electric Oven Repair`
+   - **Designation**: `Thermal Electronics // Unit 02`
+   - **Photo (`src`)**: `https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?q=80&w=2071&auto=format&fit=crop`
+   - **Description (`quote`)**: `Component-level restoration of baking and microwave ovens. High-voltage magnetron replacement, high-voltage diode and capacitor diagnostics, inverter power supply fixes, digital touch membrane repairs, and heating element calibration.`
+
+3. **Automatic Washing Machine Repairing**:
+   - **Name**: `Automatic Washing Machine Repair`
+   - **Designation**: `Smart Motor & Drum Mechanics // Unit 03`
+   - **Photo (`src`)**: `https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?q=80&w=2071&auto=format&fit=crop`
+   - **Description (`quote`)**: `Full mechanical and electronic overhaul of front-load and top-load automatic washing machines. Brushless direct-drive motor servicing, computerized wash-cycle program card repairs, electronic drain pump fixes, and vibration damper stabilization.`
+
+4. **Electronic PCB (Circuit Board) Repairing**:
+   - **Name**: `PCB Circuit & Board Repair`
+   - **Designation**: `Micro-Soldering & Diagnostics // Unit 04`
+   - **Photo (`src`)**: `https://images.unsplash.com/photo-1597733336794-12d05021d510?q=80&w=1974&auto=format&fit=crop`
+   - **Description (`quote`)**: `Advanced SMD rework, micro-soldering, and oscilloscope troubleshooting for burnt or faulty appliance control boards. Microcontroller diagnostics, EEPROM firmware re-flashing, burnt copper trace reconstruction, and short-circuit isolation down to individual MOSFETs.`
+
+### 6.4 Section 02 Layout Integration
+- **Container Structure**:
+  - Outer Section: Full-height viewport container (`h-[100dvh]` on desktop, `min-h-[100dvh]` on compact/mobile).
+  - Top Ledger: `[ 02 // Services ]` with technical status chip `Hardware Overhaul // Active`.
+  - Main Headline: Large uppercase heading **`OUR SERVICES`** with subtle technical subtitle: `Specialized Appliance Engineering & Circuit Board Diagnostics`.
+  - Carousel Stage: Centered split grid layout with 3D image stack on the left and animated technical dossier & navigation on the right.
+

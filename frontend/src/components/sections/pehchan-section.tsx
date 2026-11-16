@@ -36,9 +36,7 @@ export function PehchanSection({ className = "" }: PehchanSectionProps) {
             </li>
           ))}
         </ul>
-      </div>
-
-      
+      </div>      
     </section>
   );
 }

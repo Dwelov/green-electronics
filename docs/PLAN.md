@@ -37,10 +37,17 @@ flowchart TD
         P5_3 --> P5_4["Phase 5.4: Verification & Fallbacks"]
     end
 
+    subgraph Feature 6: Services Carousel
+        P6_1["Phase 6.1: Component Scaffolding"] --> P6_2["Phase 6.2: Services Data & Photography"]
+        P6_2 --> P6_3["Phase 6.3: Section 02 Overhaul"]
+        P6_3 --> P6_4["Phase 6.4: Verification & Responsive Polish"]
+    end
+
     P1_3 --> P2_1
     P2_3 --> P3_1
     P3_2 --> P4_1
     P4_3 --> P5_1
+    P5_4 --> P6_1
 ```
 
 ---
@@ -966,6 +973,190 @@ Harden the band transition for mobile viewports, rapid double-clicks, and access
 
 ---
 
+## Feature 6: Section 02 Services Carousel (Animated Testimonials Engine)
+
+### Phase 6.1: Component Scaffolding & Animated Testimonials Engine
+
+#### 1. Objective & Scope
+Construct the core `AnimatedTestimonials` component in `frontend/src/components/ui/animated-testimonials.tsx` using `motion/react`, implementing the 3D card tilt stack, dynamic word-by-word blur reveal animation for descriptions, and circular navigation controls.
+
+#### 2. Affected Files
+- `frontend/src/components/ui/animated-testimonials.tsx` (New component)
+- `frontend/src/components/icons.tsx` (Add arrow left/right navigation icons if needed)
+
+#### 3. Precise Implementation Plan
+1. **Component Interface Definition:**
+   ```typescript
+   export type ServiceTestimonial = {
+     quote: string;
+     name: string;
+     designation: string;
+     src: string;
+   };
+
+   export interface AnimatedTestimonialsProps {
+     testimonials: ServiceTestimonial[];
+     autoplay?: boolean;
+     className?: string;
+   }
+   ```
+2. **Card Stack Animation Physics:**
+   - Active card: `opacity: 1`, `scale: 1`, `z: 0`, `rotate: 0`, `zIndex: 30`, `y: [0, -80, 0]` with duration 0.4s and `easeInOut` curve.
+   - Inactive cards: `opacity: 0.7`, `scale: 0.95`, `z: -100`, deterministic rotation `rotate: randomRotateY(index)` (between $-10^\circ$ and $+10^\circ$).
+   - Exit animation: `opacity: 0`, `scale: 0.9`, `z: 100`.
+   - `AnimatePresence` managing mount/unmount lifecycles.
+3. **Word-by-Word Text Animation:**
+   - Split description by spaces: `quote.split(" ").map((word, index) => ...)`
+   - Initial state: `filter: "blur(10px)"`, `opacity: 0`, `y: 5`.
+   - Animate state: `filter: "blur(0px)"`, `opacity: 1`, `y: 0`.
+   - Transition stagger: `delay: 0.02 * index`, `duration: 0.2s`.
+4. **Interactive Navigation Controls:**
+   - Circular next/prev control buttons with hover rotation.
+   - Keyboard arrow key listeners (Left / Right).
+
+#### 4. Verification Tests
+
+##### Automated Tests
+- TypeScript compilation:
+  `cd frontend && npx tsc --noEmit`
+- ESLint verification:
+  `cd frontend && npm run lint`
+
+##### Manual Verification Checklist
+1. Render component with sample items.
+2. Click next button: observe previous card exit with 3D rotation and next card lift forward with vertical bounce.
+3. Verify quote text blurs in smoothly word-by-word.
+
+##### Phase Exit Criteria
+- [x] Card stack 3D rotation operates smoothly without layout jitter.
+- [x] Word-by-word blur text reveal animates on active slide change.
+
+---
+
+### Phase 6.2: Services Data Architecture & Photography Asset Integration
+
+#### 1. Objective & Scope
+Construct the dataset of 4 specialized hardware repair categories: Air Conditioners (AC), Microwave & Electric Ovens, Automatic Washing Machines, and Printed Circuit Boards (PCBs), incorporating dedicated high-resolution photography and technical descriptions.
+
+#### 2. Affected Files
+- `frontend/src/components/sections/pehchan-section.tsx` (or dedicated services dataset file)
+
+#### 3. Precise Implementation Plan
+1. **Define the 4 Specialized Services:**
+   - **Service 1: AC Repair & Servicing**:
+     - `name`: "Air Conditioner (AC) Repair"
+     - `designation`: "HVAC & Inverter Systems // Unit 01"
+     - `src`: `"https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2069&auto=format&fit=crop"`
+     - `quote`: "Comprehensive diagnostics and repairs for inverter split, multi-split, and commercial air conditioning units. Precision refrigerant leak detection, R410A/R32 gas charging, compressor inverter PCB circuit restoration, and deep chemical wash servicing."
+   - **Service 2: Microwave & Electric Oven Repair**:
+     - `name`: "Microwave & Electric Oven Repair"
+     - `designation`: "Thermal Electronics // Unit 02"
+     - `src`: `"https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?q=80&w=2071&auto=format&fit=crop"`
+     - `quote`: "Component-level restoration of baking and microwave ovens. High-voltage magnetron replacement, high-voltage diode and capacitor diagnostics, inverter power supply fixes, digital touch membrane repairs, and heating element calibration."
+   - **Service 3: Automatic Washing Machine Repair**:
+     - `name`: "Automatic Washing Machine Repair"
+     - `designation`: "Smart Motor & Drum Mechanics // Unit 03"
+     - `src`: `"https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?q=80&w=2071&auto=format&fit=crop"`
+     - `quote`: "Full mechanical and electronic overhaul of front-load and top-load automatic washing machines. Brushless direct-drive motor servicing, computerized wash-cycle program card repairs, electronic drain pump fixes, and vibration damper stabilization."
+   - **Service 4: PCB Circuit & Board Repair**:
+     - `name`: "PCB Circuit & Board Repair"
+     - `designation`: "Micro-Soldering & Diagnostics // Unit 04"
+     - `src`: `"https://images.unsplash.com/photo-1597733336794-12d05021d510?q=80&w=1974&auto=format&fit=crop"`
+     - `quote`: "Advanced SMD rework, micro-soldering, and oscilloscope troubleshooting for burnt or faulty appliance control boards. Microcontroller diagnostics, EEPROM firmware re-flashing, burnt copper trace reconstruction, and short-circuit isolation down to individual MOSFETs."
+
+#### 4. Verification Tests
+
+##### Automated Tests
+- Verify array length equals 4 and all image URLs are valid strings.
+- Build validation: `cd frontend && npm run build`
+
+##### Manual Verification Checklist
+1. Inspect images in the carousel: verify crisp rendering across all 4 categories.
+2. Confirm each service displays its corresponding title, unit tag, and description.
+
+##### Phase Exit Criteria
+- [x] All 4 services integrated with distinct photos, titles, and technical descriptions.
+
+---
+
+### Phase 6.3: Section 02 Layout Overhaul ("OUR SERVICES" Header & Presentation Integration)
+
+#### 1. Objective & Scope
+Redesign `PehchanSection` (`frontend/src/components/sections/pehchan-section.tsx`) to feature the bold headline **"OUR SERVICES"**, mount the `AnimatedTestimonials` carousel, and align top-bar navigation labels from "Identity" to "Services".
+
+#### 2. Affected Files
+- `frontend/src/components/sections/pehchan-section.tsx`
+- `frontend/src/components/site-header.tsx`
+- `frontend/src/components/pagination-hud.tsx`
+- `frontend/src/app/pehchan/page.tsx`
+
+#### 3. Precise Implementation Plan
+1. **Header & Section Typography:**
+   - Section Badge: `[ 02 // Services ]` with technical status indicator.
+   - Main Headline: Large bold heading **`OUR SERVICES`** (`font-display text-[38px] sm:text-[52px] lg:text-[60px] font-bold uppercase leading-none tracking-tight text-ink`).
+   - Subtitle: `Specialized Appliance Engineering & Circuit Board Diagnostics`.
+2. **Mounting the Carousel:**
+   - Embed `<AnimatedTestimonials testimonials={SERVICES} autoplay={false} />`.
+   - Layout: Two-column grid (image stack on left, description and controls on right) centered in the viewport.
+3. **Navigation Sync:**
+   - In `site-header.tsx`: Update item 1 label to `"Services // 02"`.
+   - In `pagination-hud.tsx`: Update code "02" label to `"Services"`.
+   - In `app/pehchan/page.tsx`: Update metadata title to `"Services — Green Electronics"`.
+
+#### 4. Verification Tests
+
+##### Automated Tests
+- Typecheck and lint:
+  `cd frontend && npx tsc --noEmit && npm run lint`
+- Full production build:
+  `cd frontend && npm run build`
+
+##### Manual Verification Checklist
+1. Navigate to Section 02: verify the bold heading **"OUR SERVICES"** appears prominently at the top.
+2. Verify the 3D card carousel sits cleanly underneath the header.
+3. Confirm `SiteHeader` nav reflects `"Services // 02"` and highlights actively on Section 02.
+
+##### Phase Exit Criteria
+- [x] Section 02 displays "OUR SERVICES" header followed by the interactive carousel.
+- [x] Header navigation and pagination HUD labels synchronously display "Services".
+
+---
+
+### Phase 6.4: Verification, Quality Assurance & Mobile Viewport Polish
+
+#### 1. Objective & Scope
+Harden the services carousel for mobile screen heights, ensure smooth touch navigation, and verify zero performance regression across all presentation transitions.
+
+#### 2. Affected Files
+- `frontend/src/components/ui/animated-testimonials.tsx`
+- `frontend/src/components/sections/pehchan-section.tsx`
+
+#### 3. Precise Implementation Plan
+1. **Responsive Viewport Adaptations:**
+   - Mobile breakpoint (`< 768px`): Stack image container above text content; adjust image height (`h-60` on mobile, `h-80` on desktop).
+   - Ensure controls remain easily clickable on touch devices (minimum 44x44px touch targets).
+2. **Reduced Motion Compliance:**
+   - Check `prefers-reduced-motion`: disable 3D rotational tilt and vertical translation if user prefers reduced motion, falling back to clean opacity crossfades.
+3. **Performance Profiling:**
+   - Verify card animations execute at 60fps with zero layout shifts or memory leaks.
+
+#### 4. Verification Tests
+
+##### Automated Tests
+- Full build and lint verification:
+  `cd frontend && npm run lint && npx tsc --noEmit && npm run build`
+
+##### Manual Verification Checklist
+1. Test on mobile screen emulation (390x844): verify image stack and text fit within the screen without clipping.
+2. Test next/prev buttons on touch: verify rapid clicks transition smoothly.
+3. Verify Band Transition into and out of Section 02 remains smooth.
+
+##### Phase Exit Criteria
+- [x] 100% responsive across desktop, tablet, and mobile viewports.
+- [x] Full compliance with accessibility and reduced-motion standards.
+
+---
+
 ## Complete Verification & Validation Master Matrix
 
 | Feature | Phase | Primary Verification Method | Success Criteria |
@@ -985,3 +1176,7 @@ Harden the band transition for mobile viewports, rapid double-clicks, and access
 | **F5: Band Transition** | 5.2 Motion Physics | 5 bands `#151515`, duration 0.6s, stagger 0.5s check | Precise 5-band geometry, timing & midpoint swap |
 | **F5: Band Transition** | 5.3 Nav Integration | Click header links & HUD dots to trigger wipe | Seamless section switch at midpoint occlusion |
 | **F5: Band Transition** | 5.4 QA & Fallbacks | Rapid clicks & `prefers-reduced-motion` test | Zero race conditions, reduced-motion compliance |
+| **F6: Services Carousel** | 6.1 Component Engine | Component compilation & 3D card tilt animation | Smooth 3D stack motion & word blur text reveal |
+| **F6: Services Carousel** | 6.2 Services Data | Photography assets & technical service copy check | 4 services (AC, Oven, Washer, PCB) with images & copy |
+| **F6: Services Carousel** | 6.3 Section 02 Layout | "OUR SERVICES" header & navigation label sync | Bold heading rendered, header nav synced to Services |
+| **F6: Services Carousel** | 6.4 Mobile & QA | Responsive mobile test & reduced motion fallback | Mobile layout fit, 60fps execution, zero layout shifts |
