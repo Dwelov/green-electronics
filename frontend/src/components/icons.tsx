@@ -121,3 +121,33 @@ export function MapPinIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+/** Material Symbols "chevron_left" */
+export function ChevronLeftIcon({ className }: IconProps) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={className}
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12Z" />
+    </svg>
+  );
+}
+
+/** Material Symbols "chevron_right" */
+export function ChevronRightIcon({ className }: IconProps) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={className}
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12Z" />
+    </svg>
+  );
+}

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { PresentationOrchestrator } from "@/components/presentation-orchestrator";
 
 export const metadata: Metadata = {
-  title: "Identity",
+  title: "Services — Green Electronics",
   description:
-    "Clean power, intelligent systems. Authentic components, fair and transparent pricing, and trusted engineering support — Green Electronics Pakistan.",
+    "Specialized appliance engineering & circuit board diagnostics. Air conditioner repair, microwave & oven restoration, washing machine overhaul, and PCB micro-soldering — Green Electronics Pakistan.",
 };
 
 export default function PehchanPage() {

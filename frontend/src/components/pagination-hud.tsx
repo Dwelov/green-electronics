@@ -2,7 +2,7 @@
 
 const SECTIONS = [
   { code: "01", label: "Home" },
-  { code: "02", label: "Identity" },
+  { code: "02", label: "Services" },
   { code: "03", label: "Contact" },
 ] as const;
 
