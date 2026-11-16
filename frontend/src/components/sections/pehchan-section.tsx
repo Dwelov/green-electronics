@@ -49,8 +49,7 @@ export function PehchanSection({ className = "" }: PehchanSectionProps) {
       <div className="flex w-full max-w-5xl flex-col items-center px-6 sm:px-10 md:px-16">
         {/* Section badge */}
         <div className="mb-4 flex items-center gap-3 self-start font-display text-technical-code uppercase tracking-widest">
-          <span className="text-primary">[ 02 // Services ]</span>
-          <span aria-hidden="true" className="h-px w-8 bg-primary/50" />
+          <span className="text-primary"></span>
         </div>
 
         {/* Heading — left-aligned like the reference */}
