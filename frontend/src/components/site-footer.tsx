@@ -14,7 +14,7 @@ export function SiteFooter() {
           </span>
         </div>
         <div className="font-display text-technical-code uppercase text-muted">
-          © 2024 Green Electronics. Genuine Hardware &amp; Engineering.
+          © developed by Siraj - contact me - sirajmeher984@gmail.com
         </div>
       </div>
     </footer>
